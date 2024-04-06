@@ -40,9 +40,11 @@ $sql = "INSERT INTO $table (name, email, password, qr) VALUES ('$name', '$email'
 if (mysqli_query($conn, $sql)) {
     // Registration successful, set session variables for auto login
     $_SESSION['email'] = $email;
+    $_SESSION['name'] = $name;
+
 
     // Redirect to index.php
-    header("Location: users.php");
+    header("Location: index.php");
 } else {
     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 }

@@ -34,62 +34,36 @@
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Login</button>
+                            <a href="register.php" class="btn btn-link">Register</a>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
-        // Function to parse QR code value and auto-fill form fields
-        function parseQRCodeValue(value) {
-            // Split the value by tab character
-            var parts = value.split('/');
-
-            // Fill the email and password fields
-            document.getElementById('email').value = parts[0];
-            document.getElementById('password').value = parts[1];
-
-            // Submit the form
-            document.getElementById('loginForm').submit();
+    document.addEventListener('DOMContentLoaded', function() {
+    var inputField1 = document.getElementById('email');
+    var inputField2 = document.getElementById('password');
+    
+    inputField1.focus(); // Focus on the first input field
+    
+    // Event listener to check if the value of inputField1 ends with ".com" and focus on inputField2
+    inputField1.addEventListener('input', function() {
+        if (inputField1.value.endsWith('.com')) {
+            inputField2.focus(); // Focus on the second input field
         }
+    });
 
-        // Function to check if the QR code value is received
-        function checkQRCode() {
-            // Replace this with your actual QR scanning logic
-            var scannedQRValue = prompt("SCAN QR CODE USER UNTUK LOGIN");
-            if (scannedQRValue != null) {
-                parseQRCodeValue(scannedQRValue);
-            }
+    // Event listener to handle clicks outside the input fields
+    document.addEventListener('click', function(event) {
+        if (event.target !== inputField1 && event.target !== inputField2) {
+            // If clicked outside both input fields
+            inputField1.focus(); // Focus back on the first input field
         }
+    });
+});
+</script>
 
-        // Event listener to submit the form when Enter is pressed after filling both inputs
-        document.addEventListener('DOMContentLoaded', function() {
-            var emailInput = document.getElementById('email');
-            var passwordInput = document.getElementById('password');
-
-            emailInput.addEventListener('keyup', function(event) {
-                if (event.keyCode === 13 && passwordInput.value !== '') {
-                    event.preventDefault();
-                    document.getElementById('loginForm').submit();
-                }
-            });
-
-            passwordInput.addEventListener('keyup', function(event) {
-                if (event.keyCode === 13 && emailInput.value !== '') {
-                    event.preventDefault();
-                    document.getElementById('loginForm').submit();
-                }
-            });
-        });
-        // Function to check QR code after 5 seconds
-        setTimeout(function() {
-        checkQRCode();
-        }, 2000);
-
-        // Call the function to check QR code when the page loads
-        // window.onload = checkQRCode;
-    </script>
 </body>
 </html>

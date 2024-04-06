@@ -32,8 +32,10 @@ if (mysqli_num_rows($result) > 0) {
     // Verify the password
     if (password_verify($password, $hashed_password)) {
         // Password is correct, set session variables and redirect to index.php
-        $_SESSION['email'] = $email;
-        header("Location: users.php");
+        $_SESSION['email'] = $email; // Simpan alamat email pengguna dalam sesi
+        $_SESSION['name'] = $row['name']; // Simpan nama pengguna dalam sesi
+
+        header("Location: index.php");
     } else {
         // Password is incorrect, redirect back to login.php
         header("Location: login.php");
