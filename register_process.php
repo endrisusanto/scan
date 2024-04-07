@@ -28,21 +28,20 @@ $password = $_POST['password'];
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // Combine name and password
-$qr_value = $email . '/' . $password;
+$qr_value = $email . $password;
 
 // Generate QR code
 $qr_filename = 'qr/' .$name. '_'.date("Ymd",time()) . '.png'; // Generate unique filename for QR code
 QRcode::png($qr_value, $qr_filename); // Generate QR code and save as PNG
 
 // SQL query to insert user data into the database
-$sql = "INSERT INTO $table (name, email, password, qr) VALUES ('$name', '$email', '$hashed_password', '$qr_filename')";
+$sql = "INSERT INTO $table (name, email, password, qr , level) VALUES ('$name', '$email', '$hashed_password', '$qr_filename', 'member')";
 
 if (mysqli_query($conn, $sql)) {
     // Registration successful, set session variables for auto login
     $_SESSION['email'] = $email;
     $_SESSION['name'] = $name;
-
-
+    $_SESSION['level'] = $row['level']; // Simpan nama pengguna dalam sesi
     // Redirect to index.php
     header("Location: index.php");
 } else {

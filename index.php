@@ -175,7 +175,7 @@ a {
     box-shadow: 0 0 20px #0dcaf0;
   }
   100% {
-    box-shadow: 0 0 10px #0d6efd;
+    box-shadow: 0 0 10px #ff0000;
   }
 }
 
@@ -234,7 +234,7 @@ a {
     </div>
     <div class="form-group">
         <label for="nomor_asset">Asset Number</label>
-        <input type="text" class="form-control" id="nomor_asset" name="nomor_asset">
+        <input type="text" class="form-control" id="nomor_asset" name="nomor_asset" onkeyup="convertToUppercase(this)">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -378,9 +378,10 @@ window.addEventListener("click", function(event) {
 <script>
   // Fungsi untuk menghasilkan warna acak dalam format hex dari palet warna soft
   function randomSoftColor() {
-    var softColors = ['#F0EAD6', '#D0E0E3', '#E6E6FA', '#FFDAB9', '#B0C4DE', '#FFE4E1']; // Daftar warna soft
-    return softColors[Math.floor(Math.random() * softColors.length)];
-  }
+  var softColors = ['#F0EAD6', '#D0E0E3', '#E6E6FA', '#FFDAB9', '#B0C4DE', '#FFE4E1', '#FFB6C1', '#87CEFA', '#F08080', '#20B2AA', '#9370DB', '#FFA07A']; // Daftar warna soft termasuk 10 warna tambahan
+  return softColors[Math.floor(Math.random() * softColors.length)];
+}
+
 
   // Mengambil semua elemen dengan kelas 'card-header'
   var cardHeaders = document.querySelectorAll('.card-header');
@@ -423,6 +424,11 @@ window.addEventListener("click", function(event) {
 <script>
 function dashboard() {
     window.location.href = 'view.php';
+}
+</script>
+<script>
+function convertToUppercase(input) {
+  input.value = input.value.toUpperCase();
 }
 </script>
 </body>

@@ -34,7 +34,7 @@ if (mysqli_num_rows($result) > 0) {
         // Password is correct, set session variables and redirect to index.php
         $_SESSION['email'] = $email; // Simpan alamat email pengguna dalam sesi
         $_SESSION['name'] = $row['name']; // Simpan nama pengguna dalam sesi
-        $_SESSION['level'] = $row['level']; // Simpan nama pengguna dalam sesi
+        $_SESSION['level'] = $row['level']; // Simpan level pengguna dalam sesi
 
 
         header("Location: index.php");
