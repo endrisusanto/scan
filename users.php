@@ -23,8 +23,16 @@ if (!$conn) {
 }
 
 // Fetch user data from the database
-$sql = "SELECT name, email, qr FROM $table";
-$result = mysqli_query($conn, $sql);
+if ($_SESSION['level']=='super user'){
+    $sql = "SELECT * FROM users WHERE 1";
+    $result = mysqli_query($conn, $sql);
+}
+else{
+    $pengguna = $_SESSION['name'];
+    $sql = "SELECT * FROM users WHERE name='$pengguna'";
+    $result = mysqli_query($conn, $sql);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -34,10 +42,40 @@ $result = mysqli_query($conn, $sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
+
+            /* Gaya untuk dark mode */
+    .dark-mode {
+        background-color: #222;
+        color: #fff;
+    }
+/* Gaya untuk tombol dark mode */
+#dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+}
+    .dark-mode .table {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .dark-mode .table th,
+    .dark-mode .table td {
+        background-color: #333;
+        border-color: #555;
+        color: #fff;
+        padding: 4px;
+        padding-top: 10px;
+    }
+
+    .dark-mode .table th {
+        background-color: #444;
+        color:#ffffff;
+    }
         .container {
             margin-top: 50px;
         }
@@ -47,9 +85,25 @@ $result = mysqli_query($conn, $sql);
         .qr-code {
             max-width: 200px; /* Sesuaikan dengan kebutuhan Anda */
         }
+        .dashboard-form {
+        position: fixed;
+        top: 20px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+        z-index: 1000; /* Pastikan form ada di atas konten lain */
+}
+.btn {
+    background-color: #444; /* Warna latar belakang tombol */
+    color: #fff; /* Warna teks tombol */
+}
+
     </style>
 </head>
 <body>
+<div onclick="dashboard()" class="dashboard-form">
+<button id="dashboard" class="btn" title="Data Table Dashbord">
+  <span class="fa fa-home"></span>
+</button>
+</div>
     <div class="container">
         <h2>User Data</h2>
         <table class="table table-striped">
@@ -75,6 +129,69 @@ $result = mysqli_query($conn, $sql);
         </form>
     </div>
 
+    <button id="dark-mode-toggle" class="btn"><i class="fas fa-moon" title="Dark Mode"></i></button>
+    <button id="fullscreen-toggle" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"
+        title="FullScreen Mode"><i class="fas fa-expand"></i></button>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const body = document.body;
+
+    darkModeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+        const isDarkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+        updateDarkModeButton(isDarkMode);
+    });
+
+    // Cek apakah dark mode telah diaktifkan sebelumnya
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+    body.classList.toggle('dark-mode', isDarkMode);
+    updateDarkModeButton(isDarkMode);
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fullscreenToggle = document.getElementById('fullscreen-toggle');
+
+    // Fungsi untuk meminta mode fullscreen
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    fullscreenToggle.addEventListener('click', toggleFullScreen);
+    
+});
+</script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var inputField1 = document.getElementById('email');
+    var inputField2 = document.getElementById('password');
+    
+    inputField1.focus(); // Focus on the first input field
+    
+    // Event listener to check if the value of inputField1 ends with ".com" and focus on inputField2
+    inputField1.addEventListener('input', function() {
+        if (inputField1.value.endsWith('.com')) {
+            inputField2.focus(); // Focus on the second input field
+        }
+    });
+
+    // Event listener to handle clicks outside the input fields
+    document.addEventListener('click', function(event) {
+        if (event.target !== inputField1 && event.target !== inputField2) {
+            // If clicked outside both input fields
+            inputField1.focus(); // Focus back on the first input field
+        }
+    });
+});
+</script>
     <script>
         // Function to parse QR code value
         function parseQRCodeValue(value) {
@@ -100,6 +217,11 @@ $result = mysqli_query($conn, $sql);
         }
     </script>
     </div>
+    <script>
+function dashboard() {
+    window.location.href = 'index.php';
+}
+</script>
 </body>
 </html>
 

@@ -6,7 +6,6 @@ if (!isset($_SESSION['name'])) {
     header("Location: login.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +34,13 @@ if (!isset($_SESSION['name'])) {
         background-color: #222;
         color: #fff;
     }
+        /* Gaya untuk tombol dark mode */
+    #dark-mode-toggle {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 9999;
+    }
 
     .dark-mode .card {
         background-color: #333;
@@ -61,6 +67,8 @@ if (!isset($_SESSION['name'])) {
         background-color: #333;
         border-color: #555;
         color: #fff;
+        padding: 4px;
+        padding-top: 10px;
     }
 
     .dark-mode .table th {
@@ -75,19 +83,7 @@ if (!isset($_SESSION['name'])) {
         border-color: #555;
         color: #fff;
     }
-    /* Gaya untuk tombol dark mode */
-    #dark-mode-toggle {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        z-index: 9999;
-    }
-    .upload-form {
-            position: fixed;
-            top: 20px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
-            right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
-            z-index: 1000; /* Pastikan form ada di atas konten lain */
-    }
+
     .modal {
   display: none;
   position: fixed;
@@ -127,22 +123,86 @@ if (!isset($_SESSION['name'])) {
 }
 #assetForm {
     position: fixed;
-    top: 20px; /* Sesuaikan dengan jarak atas yang diinginkan */
+    top: 50px; /* Sesuaikan dengan jarak atas yang diinginkan */
     left: 20px; /* Sesuaikan dengan jarak kiri yang diinginkan */
 }
 .container-fluid {
     padding-right: 5%;
     padding-left: 12%;
 }
+.users-form {
+        position: fixed;
+        top: 20px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+        z-index: 1000; /* Pastikan form ada di atas konten lain */
+}
+.export-form {
+        position: fixed;
+        top: 65px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+        z-index: 1000; /* Pastikan form ada di atas konten lain */
+}
+.upload-form {
+        position: fixed;
+        top: 100px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+        z-index: 1000; /* Pastikan form ada di atas konten lain */
+}
+.dashboard-form {
+        position: fixed;
+        top: 140px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+        z-index: 1000; /* Pastikan form ada di atas konten lain */
+}
+a {
+    padding: 13px;
+    color: #444;
+    background-color: #fff;
+    border-radius:4px;
+}
+.dark-mode a {
+    padding: 13px;
+    color: #ffffff;
+    background-color: #444;
+    border-radius:4px;
+}
+/* Animasi glow outline */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 10px #ff0000; /* Merah */
+  }
+  50% {
+    box-shadow: 0 0 20px #0dcaf0;
+  }
+  100% {
+    box-shadow: 0 0 10px #0d6efd;
+  }
+}
+
+/* CSS untuk input text */
+#nomor_asset {
+  animation: glow 1s infinite alternate; /* Memanggil animasi glow */
+
+}
   </style>
 </head>
 <body>
-<!-- <div class="upload-form">
-<button type="button" class="btn mt-3" data-toggle="modal" data-target="#importModal"> <span class="fa fa-upload"></span></button>
-</div> -->
+<div class="users-form">
+<a href="users.php">
+  <span class="fa fa-user-circle"></span></a>
+</div>
+<div class="export-form">
+<a href="export_database.php">
+  <span class="fa fa-download"></span></a>
+</div>
 <div class="upload-form">
-<button id="uploadBtn" class="btn">
+<button id="uploadBtn" class="btn" title="Upload New Data Sample">
   <span class="fa fa-upload"></span>
+</button>
+</div>
+<div onclick="dashboard()" class="dashboard-form">
+<button id="dashboard" class="btn" title="Data Table Dashbord">
+  <span class="fa fa-table"></span>
 </button>
 </div>
 <div id="uploadModal" class="modal">
@@ -164,16 +224,16 @@ if (!isset($_SESSION['name'])) {
         </div>
     </div>
 </div>
-<h2><center>ASSET MANAGEMENT TKDN SW</center></h2>
+<h2><center>PORTAL SIMPAN PINJAM TKDN SW</center></h2>
 
 <div class="container mt-3">
-<form action="input_process.php"method="POST" id="assetForm">
+<form action="update_process.php"method="POST" id="assetForm">
     <div class="form-group">
-        <label for="nama">Login As:</label>
-        <input type="text" class="form-control" id="nama" name="nama" value="<?php echo $_SESSION['name']?>" readonly>
+        <label for="name">User Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
     </div>
     <div class="form-group">
-        <label for="nomor_asset">Nomor Asset:</label>
+        <label for="nomor_asset">Asset Number</label>
         <input type="text" class="form-control" id="nomor_asset" name="nomor_asset">
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
@@ -198,75 +258,67 @@ if (!isset($_SESSION['name'])) {
 </div>
 <div class="container-fluid mt-3">
 <div class="row">
-    <?php
-    $sql = "SELECT * FROM sample";
+<?php
+    $sql = "SELECT * FROM database_sample WHERE status = 'PINJAM'"; // Perbarui query SQL
     $result = $conn->query($sql);
 
     $asset_data = array(); // Array untuk menyimpan data nomor asset yang telah dikelompokkan
 
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-            $nama = $row['nama'];
+            $nama = $row['name'];
             $nomor_asset = $row['nomor_asset'];
-            $id = $row['id'];
+            $model = $row['model']; // Menambah kolom model
+            $timestamp = $row['timestamp']; // Menambah kolom timestamp
             
             // Jika nomor asset dengan nama yang sama sudah ada dalam array, tambahkan nomor asset ke tabel yang sudah ada
             if(array_key_exists($nama, $asset_data)) {
-                $asset_data[$nama] .= "<tr><td>$nomor_asset</td><td><a href='edit.php?id=$id' class='btn btn-primary'>Edit</a> <a href='index.php?delete_id=$id' class='btn btn-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>Delete</a></td></tr>";
+                $asset_data[$nama] .= "<tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
             } else { // Jika nomor asset dengan nama yang sama belum ada dalam array, buat tabel baru
-                $asset_data[$nama] = "<table class='table'><thead><tr><th>Nomor Asset</th><th>Action</th></tr></thead><tbody><tr><td>$nomor_asset</td><td><a href='edit.php?id=$id' class='btn btn-primary'>Edit</a> <a href='index.php?delete_id=$id' class='btn btn-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>Delete</a></td></tr>";
+                $asset_data[$nama] = "<table class='table table-striped'><thead><tr><th>No. Asset</th><th>Model</th><th>Timestamp</th></tr></thead><tbody><tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
             }
+
         }
         
-    // Tampilkan card dengan tabel-tabel yang sudah dikelompokkan
-    foreach ($asset_data as $nama => $table) {
-    // Buat DOMDocument untuk mem-parsing HTML
-    $dom = new DOMDocument();
-    // Lakukan parsing HTML dari tabel
-    $dom->loadHTML($table);
-    // Dapatkan jumlah elemen <tr> dalam tabel
-    $total_rows = $dom->getElementsByTagName('tr')->length;
+        // Tampilkan card dengan tabel-tabel yang sudah dikelompokkan
+        foreach ($asset_data as $nama => $table) {
+            // Buat DOMDocument untuk mem-parsing HTML
+            $dom = new DOMDocument();
+            // Lakukan parsing HTML dari tabel
+            $dom->loadHTML($table);
+            // Dapatkan jumlah elemen <tr> dalam tabel
+            $total_rows = $dom->getElementsByTagName('tr')->length;
 
-    // Kurangi satu dari jumlah baris yang dihitung
-    $total_rows--;
+            // Kurangi satu dari jumlah baris yang dihitung
+            $total_rows--;
 
-    // Tambahkan jumlah baris data di card-footer
-    echo "
-    <div class='col-md-3'>
-        <div class='card mb-3'>
-            <div class='card-header'>
-                <h3><strong><center>$nama</center></h3></strong>
-            </div>
-            <div class='card-body'>$table</tbody></table></div>
-            <div class='card-footer'>SEDANG PINJAM <span class='badge'>$total_rows</span></div>
-        </div>
-    </div>";
-}
-
+            // Tambahkan jumlah baris data di card-footer
+            echo "
+            <div class='col-md-3'>
+                <div class='card mb-3'>
+                    <div class='card-header'>
+                        <h3><strong><center>$nama</center></h3></strong>
+                    </div>
+                    <div class='card-body'>$table</tbody></table></div>
+                    <div class='card-footer'>SEDANG PINJAM <span class='badge'>$total_rows</span></div>
+                </div>
+            </div>";
+        }
     } else {
         echo "<div class='col'><div class='alert alert-info' role='alert'>Tidak ada data</div></div>";
     }
 
     $conn->close();
-    ?>
+?>
+
+
   </div>
 </div>
-<button  id="dark-mode-toggle" class="btn"><i class="fas fa-moon"></i></button>
+<button  id="dark-mode-toggle" class="btn"><i class="fas fa-moon" title="Dark Mode"></i></button>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const body = document.body;
-
-    // Fungsi untuk mengubah gaya tombol dark mode sesuai dengan status dark mode
-    function updateDarkModeButton(isDarkMode) {
-        if (isDarkMode) {
-            darkModeToggle.classList.remove('btn-outline-light', 'text-dark');
-            darkModeToggle.classList.add('btn-outline-dark');
-        } else {
-            darkModeToggle.classList.remove('btn-outline-dark');
-            darkModeToggle.classList.add('btn-outline-light', 'text-dark');
-        }
-    }
 
     darkModeToggle.addEventListener('click', function() {
         body.classList.toggle('dark-mode');
@@ -283,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<button id="fullscreen-toggle" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"><i class="fas fa-expand"></i></button>
+<button id="fullscreen-toggle" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;" title="FullScreen Mode"><i class="fas fa-expand"></i></button>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const fullscreenToggle = document.getElementById('fullscreen-toggle');
@@ -367,6 +419,11 @@ window.addEventListener("click", function(event) {
             }
         });
     });
+</script>
+<script>
+function dashboard() {
+    window.location.href = 'view.php';
+}
 </script>
 </body>
 </html>
