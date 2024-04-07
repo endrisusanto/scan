@@ -57,12 +57,12 @@ if(isset($_GET['nomor_asset'])) {
         }
         .timeline-item .timeline-content.PINJAM {
             float: right;
-			background-color: #915f5f;
+			background-color: #D37676;
 			color: white;
 					 
         }
 		.timeline-item .timeline-content.KEMBALI {
-        background-color: #437350;
+        background-color: #78A083;
         color: white;
 		}
         .timeline-item .timeline-content .status {

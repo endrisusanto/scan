@@ -219,7 +219,7 @@ a {
                     <label for="excelFile"></label>
                     <input type="file" class="form-control-file" id="excelFile" name="excelFile" accept=".xls,.xlsx">
                 </div>
-                <button type="submit" class="btn btn-primary mt-2" name="submit">Upload</button>
+                <button  type="submit" class="btn btn-primary mt-2" name="submit">Upload</button>
             </form>
         </div>
     </div>
@@ -236,7 +236,7 @@ a {
         <label for="nomor_asset">Asset Number</label>
         <input type="text" class="form-control" id="nomor_asset" name="nomor_asset" onkeyup="convertToUppercase(this)">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button hidden type="submit" class="btn btn-primary">Submit</button>
 </form>
 
   <?php
