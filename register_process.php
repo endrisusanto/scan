@@ -24,28 +24,37 @@ $name = $_POST['name'];
 $email = $_POST['email'];
 $password = $_POST['password'];
 
-// Hash the password
-$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+// Check if email already exists
+$email_check_query = "SELECT * FROM $table WHERE email='$email' LIMIT 1";
+$result = mysqli_query($conn, $email_check_query);
+$user = mysqli_fetch_assoc($result);
 
-// Combine name and password
-$qr_value = $email . $password;
+if ($user) { // If email already exists
+    header("Location: register.php?Email_already_exists");
+} else { // If email does not exist, proceed with registration
+    // Hash the password
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Generate QR code
-$qr_filename = 'qr/' .$name. '_'.date("Ymd",time()) . '.png'; // Generate unique filename for QR code
-QRcode::png($qr_value, $qr_filename); // Generate QR code and save as PNG
+    // Combine name and password
+    $qr_value = $email . $password;
 
-// SQL query to insert user data into the database
-$sql = "INSERT INTO $table (name, email, password, qr , level) VALUES ('$name', '$email', '$hashed_password', '$qr_filename', 'member')";
+    // Generate QR code
+    $qr_filename = 'qr/' .$name. '_'.date("Ymd",time()) . '.png'; // Generate unique filename for QR code
+    QRcode::png($qr_value, $qr_filename); // Generate QR code and save as PNG
 
-if (mysqli_query($conn, $sql)) {
-    // Registration successful, set session variables for auto login
-    $_SESSION['email'] = $email;
-    $_SESSION['name'] = $name;
-    $_SESSION['level'] = $row['level']; // Simpan nama pengguna dalam sesi
-    // Redirect to index.php
-    header("Location: index.php");
-} else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    // SQL query to insert user data into the database
+    $sql = "INSERT INTO $table (name, email, password, qr , level) VALUES ('$name', '$email', '$hashed_password', '$qr_filename', 'member')";
+
+    if (mysqli_query($conn, $sql)) {
+        // Registration successful, set session variables for auto login
+        $_SESSION['email'] = $email;
+        $_SESSION['name'] = $name;
+        $_SESSION['level'] = $row['level']; // Save user's level in session
+        // Redirect to index.php
+        header("Location: index.php");
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
 }
 
 mysqli_close($conn);
