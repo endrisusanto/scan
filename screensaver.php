@@ -1,12 +1,4 @@
-<?php
-session_start();
 
-// Check if user is logged in, if not, redirect to login page
-if (!isset($_SESSION['name'])) {
-    header("Location: login.php");
-    exit();
-}
-?>
 
 
 <!DOCTYPE html>
@@ -84,25 +76,6 @@ if (!isset($_SESSION['name'])) {
         border-color: #555;
         color: #fff;
     }
-
-    .modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 20%;
-}
 .dark-mode .modal-content {
   background-color: #313131;
   margin: 10% auto;
@@ -110,51 +83,7 @@ if (!isset($_SESSION['name'])) {
   border: 1px solid #2d2d2d;
   width: 20%;
 }
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-#assetForm {
-    position: fixed;
-    top: 50px; /* Sesuaikan dengan jarak atas yang diinginkan */
-    left: 20px; /* Sesuaikan dengan jarak kiri yang diinginkan */
-}
-.container-fluid {
-    padding-right: 5%;
-    padding-left: 12%;
-}
-.users-form {
-        position: fixed;
-        top: 20px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
-        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
-        z-index: 1000; /* Pastikan form ada di atas konten lain */
-}
-.export-form {
-        position: fixed;
-        top: 65px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
-        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
-        z-index: 1000; /* Pastikan form ada di atas konten lain */
-}
-.upload-form {
-        position: fixed;
-        top: 100px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
-        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
-        z-index: 1000; /* Pastikan form ada di atas konten lain */
-}
-.dashboard-form {
-        position: fixed;
-        top: 140px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
-        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
-        z-index: 1000; /* Pastikan form ada di atas konten lain */
-}
+
 /* CSS untuk posisi timer */
 #timer-container {
   position: fixed;
@@ -203,73 +132,10 @@ a {
   </style>
 </head>
 <body>
-<div class="users-form">
-<a href="users.php">
-  <span class="fa fa-user-circle"></span></a>
-</div>
-<div class="export-form">
-<a href="export_database.php">
-  <span class="fa fa-download"></span></a>
-</div>
-<div class="upload-form">
-<button id="uploadBtn" class="btn" title="Upload New Data Sample">
-  <span class="fa fa-upload"></span>
-</button>
-</div>
-<div onclick="dashboard()" class="dashboard-form">
-<button id="dashboard" class="btn" title="Data Table Dashbord">
-  <span class="fa fa-table"></span>
-</button>
-</div>
-<div id="uploadModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="importModalLabel">IMPORT NEW MODEL</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <!-- <span aria-hidden="true">&times;</span> -->
-            </button>
-        </div>
-        <div class="modal-body">
-            <form action="upload.php" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="excelFile"></label>
-                    <input type="file" class="form-control-file" id="excelFile" name="excelFile" accept=".xls,.xlsx">
-                </div>
-                <button  type="submit" class="btn btn-primary mt-2" name="submit">Upload</button>
-            </form>
-        </div>
-    </div>
-</div>
+
 <h2><center><strong>PORTAL SIMPAN PINJAM TKDN SW</strong></center></h2>
-
-<div class="container mt-3">
-<form action="update_process.php"method="POST" id="assetForm">
-    <div class="form-group">
-        <label for="name">User Name</label>
-        <input type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
-    </div>
-    <div class="form-group">
-        <label for="nomor_asset">Asset Number</label>
-        <input type="text" class="form-control" id="nomor_asset" name="nomor_asset" onkeyup="convertToUppercase(this)">
-    </div>
-    <button hidden type="submit" class="btn btn-primary">Submit</button>
-</form>
-
   <?php
   include 'koneksi.php';
-
-  // Proses delete
-  if(isset($_GET['delete_id'])) {
-      $delete_id = $_GET['delete_id'];
-      $sql_delete = "DELETE FROM sample WHERE id = $delete_id";
-      if ($conn->query($sql_delete) === TRUE) {
-          echo "<div class='alert alert-success' role='alert'>Data berhasil dihapus</div>";
-          echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 600);</script>";
-      } else {
-          echo "<div class='alert alert-danger' role='alert'>Error deleting record: " . $conn->error . "</div>";
-          echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 600);</script>";
-      }
-  }
   ?>
 </div>
 <div class="container-fluid mt-3">
@@ -376,22 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="script.js"></script>
 <script>
-document.getElementById("uploadBtn").addEventListener("click", function() {
-  document.getElementById("uploadModal").style.display = "block";
-});
-
-document.getElementsByClassName("close")[0].addEventListener("click", function() {
-  document.getElementById("uploadModal").style.display = "none";
-});
-
-window.addEventListener("click", function(event) {
-  if (event.target == document.getElementById("uploadModal")) {
-    document.getElementById("uploadModal").style.display = "none";
-  }
-});
-
-</script>
-<script>
   // Fungsi untuk menghasilkan warna acak dalam format hex dari palet warna soft
   function randomSoftColor() {
   var softColors = ['#F0EAD6', '#D0E0E3', '#E6E6FA', '#FFDAB9', '#B0C4DE', '#FFE4E1', '#FFB6C1', '#87CEFA', '#F08080', '#20B2AA', '#9370DB', '#FFA07A']; // Daftar warna soft termasuk 10 warna tambahan
@@ -408,89 +258,13 @@ window.addEventListener("click", function(event) {
   });
 </script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var inputField = document.getElementById("nomor_asset");
+    function redirectToLoginPage() {
+        window.location.href = "login.php";
+    }
 
-        // Fungsi untuk fokus otomatis pada input field
-        inputField.focus();
-
-        // Fungsi untuk kembali fokus ke input field setelah klik diluar area
-        document.addEventListener("click", function(event) {
-            setTimeout(function() {
-                if (!inputField.contains(event.target)) {
-                    inputField.focus();
-                }
-            }, 100);
-        });
-
-        // Fungsi untuk mengirim form jika input field berisi "AS" di awal dan diikuti dengan 7 karakter
-        document.getElementById("assetForm").addEventListener("submit", function(event) {
-            var inputValue = inputField.value.trim();
-            if (inputValue.substring(0, 2).toUpperCase() === "AS" && inputValue.length === 7) {
-                // Jika kondisi terpenuhi, form akan di-submit secara otomatis
-                return true;
-            } else {
-                // Jika kondisi tidak terpenuhi, form tidak akan di-submit
-                event.preventDefault();
-                alert("Input tidak valid. Pastikan input dimulai dengan 'AS' dan memiliki total 7 karakter.");
-            }
-        });
-    });
-</script>
-<script>
-function dashboard() {
-    window.location.href = 'view.php';
-}
-</script>
-<script>
-function convertToUppercase(input) {
-  input.value = input.value.toUpperCase();
-}
-</script>
-<div id="timer-container">
-  <div id="timer">timer</div>
-</div>
-
-<script>
-// Waktu awal dalam detik
-let timeLeft = 300; // 1 menit
-
-// Mendapatkan elemen timer
-const timerElement = document.getElementById('timer');
-
-// Fungsi untuk memperbarui tampilan timer
-function updateTimer() {
-  const minutes = Math.floor(timeLeft / 60);
-  let seconds = timeLeft % 60;
-
-  // Tambahkan nol di depan jika detik kurang dari 10
-  if (seconds < 10) {
-    seconds = '0' + seconds;
-  }
-
-  // Perbarui tampilan timer
-  timerElement.innerHTML = 'Session akan berakhir dalam: '+ minutes + ':' + seconds;
-}
-
-// Fungsi untuk mengurangi waktu
-function countdown() {
-  timeLeft--;
-
-  // Perbarui tampilan timer
-  updateTimer();
-
-  // Jika waktu habis
-  if (timeLeft <= 0) {
-    // Redirect ke logout.php
-    window.location.href = 'logout.php';
-  }
-}
-
-// Mulai hitung mundur setiap detik
-const timerInterval = setInterval(countdown, 1000);
-
-// Memastikan tampilan timer terupdate pertama kali
-updateTimer();
+    document.addEventListener('touchstart', redirectToLoginPage);
+    document.addEventListener('keydown', redirectToLoginPage);
+    // document.addEventListener('mousedown', redirectToLoginPage);
 </script>
 </body>
 </html>

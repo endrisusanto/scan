@@ -24,7 +24,7 @@
 
 .container {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -76,14 +76,28 @@
 .btn-link {
     color: #007bff; /* Warna teks tombol link */
 }
+/* CSS untuk posisi timer */
+#timer-container {
+  position: fixed;
+  bottom: 2%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  /* background-color: #f0f0f0; */
+  padding: 2px 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
 
+#timer {
+  font-size: 12px;
+}
     </style>
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header"><center><strong>Login Portal Simpan Pinjam TKDN SW</center></strong></div>
+                    <div class="card-header"><center><strong><h4>SCAN QR CODE USER UNTUK LOGIN</h4></center></strong></div>
                     <div class="card-body">
                         <form id="loginForm" action="login_process.php" method="post">
                             <div class="form-group">
@@ -165,6 +179,50 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<div id="timer-container">
+  <div id="timer">timer</div>
+</div>
 
+<script>
+// Waktu awal dalam detik
+let timeLeft = 10; // 1 menit
+
+// Mendapatkan elemen timer
+const timerElement = document.getElementById('timer');
+
+// Fungsi untuk memperbarui tampilan timer
+function updateTimer() {
+  const minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+
+  // Tambahkan nol di depan jika detik kurang dari 10
+  if (seconds < 10) {
+    seconds = '0' + seconds;
+  }
+
+  // Perbarui tampilan timer
+  timerElement.innerHTML = 'Screensaver Dashboard akan muncul dalam: '+ minutes + ':' + seconds;
+}
+
+// Fungsi untuk mengurangi waktu
+function countdown() {
+  timeLeft--;
+
+  // Perbarui tampilan timer
+  updateTimer();
+
+  // Jika waktu habis
+  if (timeLeft <= 0) {
+    // Redirect ke logout.php
+    window.location.href = 'screensaver.php';
+  }
+}
+
+// Mulai hitung mundur setiap detik
+const timerInterval = setInterval(countdown, 1000);
+
+// Memastikan tampilan timer terupdate pertama kali
+updateTimer();
+</script>
 </body>
 </html>

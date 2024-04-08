@@ -48,6 +48,10 @@
                 <input type="text" class="form-control" id="nomor_asset" name="nomor_asset" value="<?php echo $data['nomor_asset']; ?>">
             </div>
             <div class="form-group">
+                <label for="model">Model:</label>
+                <input type="text" class="form-control" id="model" name="model" value="<?php echo $data['model']; ?>">
+            </div>
+            <div class="form-group">
                 <label for="status">Status:</label>
                 <select class="form-control" id="status" name="status" disabled>
                     <option value="PINJAM" <?php if($data['status'] == 'PINJAM') echo 'selected'; ?>>PINJAM</option>

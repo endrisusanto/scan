@@ -24,7 +24,7 @@
 
 .container {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -83,9 +83,9 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">Register</div>
+                    <div class="card-header"><center><h4>REGISTER AKUN TKDN SW PORTAL</h3></center></div>
                     <div class="card-body">
-                        <form action="register_process.php" method="post">
+                        <form id="registerForm" action="register_process.php" method="post">
                             <div class="form-group">
                                 <label for="name">Name:</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
@@ -98,7 +98,42 @@
                                 <label for="password">Password:</label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Register</button>
+                            <div class="mb-3">
+                            <label for="terms" class="form-label">Syarat dan Ketentuan</label>
+                            <textarea class="form-control" id="terms" rows="6" disabled>
+**Syarat dan Ketentuan Penggunaan Sistem Inventory Peminjaman Sample Development TKDN SW**
+
+Mohon diperhatikan dengan seksama syarat dan ketentuan penggunaan yang tercantum di sini.
+
+1. Penerimaan Syarat dan Ketentuan
+   Dengan mengakses atau menggunakan sistem inventory peminjaman sample development TKDN SW ini, Anda secara tegas menyetujui untuk terikat dengan syarat dan ketentuan penggunaan yang tercantum di sini. Jika Anda tidak setuju dengan syarat dan ketentuan ini, mohon untuk tidak menggunakan sistem ini.
+
+2. Tujuan Penggunaan
+   Sistem ini dirancang untuk keperluan pengelolaan inventaris dan peminjaman sample development TKDN SW. Penggunaan sistem ini harus sesuai dengan tujuan tersebut dan tidak boleh digunakan untuk kegiatan yang melanggar hukum atau melanggar hak kekayaan intelektual pihak lain.
+
+3. Pendaftaran dan Keamanan Akun
+   Untuk menggunakan sistem ini, Anda mungkin perlu mendaftar dan membuat akun pengguna. Anda bertanggung jawab penuh untuk menjaga kerahasiaan informasi akun Anda, termasuk kata sandi. Anda juga bertanggung jawab atas semua aktivitas yang terjadi di bawah akun Anda.
+
+4. Kewajiban Pengguna
+   Anda setuju untuk menggunakan sistem ini hanya untuk tujuan yang sah dan sesuai dengan hukum yang berlaku. Anda juga setuju untuk tidak mengganggu atau merusak sistem, infrastruktur, atau keamanan sistem ini, termasuk tetapi tidak terbatas pada mencoba mengakses informasi yang tidak sah atau mencoba meretas sistem.
+
+5. Pembaruan dan Perubahan
+   Syarat dan ketentuan penggunaan sistem ini dapat diperbarui atau diubah dari waktu ke waktu tanpa pemberitahuan sebelumnya. Dengan terus menggunakan sistem ini setelah perubahan tersebut, Anda secara tegas menyetujui versi terbaru dari syarat dan ketentuan.
+
+6. Pemeliharaan dan Dukungan
+   Kami berhak melakukan pemeliharaan atau perbaikan sistem yang mungkin mengakibatkan gangguan atau tidak tersedianya layanan untuk sementara waktu. Kami akan berupaya memberikan pemberitahuan sebelumnya jika memungkinkan.
+
+7. Penutup
+   Penggunaan sistem ini sepenuhnya menjadi tanggung jawab pengguna. Kami tidak bertanggung jawab atas kerugian atau kerusakan yang disebabkan oleh penggunaan sistem ini, termasuk tetapi tidak terbatas pada kerugian data atau gangguan layanan.
+
+Dengan menyetujui syarat dan ketentuan penggunaan ini, Anda setuju untuk mematuhi semua ketentuan yang tercantum di atas. Jika Anda memiliki pertanyaan atau kekhawatiran mengenai syarat dan ketentuan ini, silakan hubungi kami untuk klarifikasi lebih lanjut.
+</textarea>
+                            </div>
+                            <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agree" disabled>
+                            <label class="form-check-label" for="agree">Saya setuju dengan syarat dan ketentuan</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="registerBtn">Register</button>
                             <a href="login.php" class="btn btn-link">Login</a>
                         </form>
                     </div>
@@ -146,5 +181,43 @@ document.addEventListener('DOMContentLoaded', function() {
     
 });
 </script>
+<script>
+    // Mendapatkan elemen form, textarea, checkbox, dan tombol
+    const form = document.getElementById('registerForm');
+    const termsTextarea = document.getElementById('terms');
+    const agreeCheckbox = document.getElementById('agree');
+    const registerBtn = document.getElementById('registerBtn');
+
+    // Menambahkan event listener ketika textarea discroll
+    termsTextarea.addEventListener('scroll', function(event) {
+      // Mencegah default behavior scroll
+      event.preventDefault();
+
+      // Memeriksa apakah textarea sudah discroll hingga ke bawah
+      if (this.scrollHeight - this.scrollTop === this.clientHeight) {
+        // Jika sudah discroll hingga ke bawah, aktifkan checkbox dan tombol
+        agreeCheckbox.disabled = false;
+        registerBtn.disabled = false;
+      } else {
+        // Jika belum discroll hingga ke bawah, nonaktifkan checkbox dan tombol
+        agreeCheckbox.disabled = true;
+        registerBtn.disabled = true;
+      }
+    });
+
+    // Menambahkan event listener ketika form disubmit
+    form.addEventListener('submit', function(event) {
+      // Mencegah default behavior submit
+      event.preventDefault();
+
+      // Memeriksa apakah checkbox dicentang
+      if (!agreeCheckbox.checked) {
+        alert('Anda harus menyetujui syarat dan ketentuan.');
+      } else {
+        // Jika checkbox dicentang, form akan disubmit
+        this.submit();
+      }
+    });
+  </script>
 </body>
 </html>

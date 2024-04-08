@@ -98,6 +98,7 @@
         <tr>
             <th>Name</th>
             <th>Nomor Asset</th>
+            <th>Model</th>
             <th>Status</th>
             <th>Timestamp</th>
             <th>Action</th>
@@ -113,6 +114,7 @@
             // Kolom-kolom data
             echo "<td>" . $row['name'] . "</td>";
             echo "<td>" . $row['nomor_asset'] . "</td>";
+            echo "<td>" . $row['model'] . "</td>";
             echo "<td>" . $row['status'] . "</td>";
             echo "<td><a href='#' onclick=\"showModal('" . $row['nomor_asset'] . "')\">" . $row['timestamp'] . "</a></td>";
             echo "<td><a href='update.php?id=" . $row['id'] . "'>Update</a></td>";

@@ -10,6 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $query = "SELECT * FROM database_sample WHERE nomor_asset='$nomor_asset'";
     $result = mysqli_query($conn, $query);
     $dataBeforeUpdate = mysqli_fetch_assoc($result);
+    $model = $dataBeforeUpdate['model']; // Tambahkan variabel model
+
 
     // Jika nama sama dengan sebelumnya
     if ($name == $dataBeforeUpdate['name']) {
@@ -36,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_query($conn, $query);
 
     // Simpan riwayat timestamp ke dalam tabel sample
-    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$timestamp')";
+    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
     mysqli_query($conn, $insertQuery);
     header("Location: index.php"); // Redirect kembali ke halaman tampilan
 }

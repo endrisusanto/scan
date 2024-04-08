@@ -101,6 +101,7 @@ if(isset($_GET['nomor_asset'])) {
                 <div class="timeline-content <?php echo $row['status'] == 'PINJAM' ? 'PINJAM' : 'KEMBALI'; ?>">
                     <div class="status"><?php echo $row['status']; ?></div>
                     <div class="name"><?php echo $row['name']; ?></div>
+                    <div class="model"><?php echo $row['model']; ?></div>
                     <div class="nomor-asset"><?php echo $row['nomor_asset']; ?></div>
                     <div class="timestamp"><?php echo $row['timestamp']; ?></div>
                 </div>
