@@ -1,66 +1,61 @@
 <?php
-	header("Content-type: application/vnd-ms-excel");
-	header("Content-Disposition: attachment; filename=export.xls");
-//inisialisasi session
+// Inisialisasi session
 session_start();
-//mengecek username pada session
-if( !isset($_SESSION['name']) ){
-  $_SESSION['msg'] = 'anda harus login untuk mengakses halaman ini';
-  header('Location: login.php');
+
+// Mengecek username pada session
+if (!isset($_SESSION['name'])) {
+    $_SESSION['msg'] = 'Anda harus login untuk mengakses halaman ini';
+    header('Location: login.php');
+    exit();
 }
-?>
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Export Data Ke Excel</title>
-</head>
-<body>
-<table  border="1">
-		<thead>
-			<tr>
-                <th>Nomor</th>
-                <th>Model</th>
+
+// Koneksi ke database
+$koneksi = mysqli_connect("localhost", "root", "", "scan");
+
+// Query untuk mengambil data dari database
+$query_mysql = mysqli_query($koneksi, "SELECT * FROM `database_sample` WHERE 1 ORDER BY `database_sample`.`id` DESC ");
+
+// Menginisialisasi buffer output
+ob_clean();
+
+// Mengatur header Excel
+header("Content-type: application/ms-excel");
+header("Content-Disposition: attachment; filename=export.xls");
+
+// Membuat tabel HTML
+echo "<table border='1'>
+        <thead>
+            <tr>
                 <th>Nomor Asset</th>
-                <th>Serial Number</th>
-                <th>Nama</th>
+                <th>PEMINJAM TERAKHIR</th>
                 <th>Status</th>
-                <th>Timestamp</th>
-			</tr>
-		</thead>	
-		<?php 
+                <th>Waktu Transaksi</th>
+                <th>Model</th>
+                <th>Serial</th>
+                <th>Status Audit</th>
+                <th>Tanggal Pengecekan</th>
+                <th>PLM Holder</th>
+            </tr>
+        </thead>
+        <tbody>";
 
+// Mendapatkan data dari hasil query
+while ($data = mysqli_fetch_array($query_mysql)) {
 
+    
+    // Menambahkan baris tabel dengan data yang diambil
+    echo "<tr>";
+    echo "<td>" . $data['nomor_asset'] . "</td>";
+    echo "<td>" . $data['name'] . "</td>";
+    echo "<td>" . $data['status'] . "</td>";
+    echo "<td>" . $data['timestamp'] . "</td>";
+    echo "<td>" . $data['model'] . "</td>";
+    echo "<td>" . $data['sn'] . "</td>";
+    echo "<td>" . $data['status_audit'] . "</td>";
+    echo "<td>" . $data['latest_check'] . "</td>";
+    echo "<td>" . $data['pic_sample'] . "</td>";
+	echo "</tr>";
+}
 
-$koneksi = mysqli_connect("localhost","root","","scan");
-$pengguna = $_SESSION['name'];
-$query_mysql = mysqli_query($koneksi,"SELECT * FROM `database_sample` WHERE 1 ORDER BY `database_sample`.`id` DESC ");
-$nomor = 1;
-while($data = mysqli_fetch_array($query_mysql)){
-	$kodewarna = $data['status'];
-	
-
-if(strpos($kodewarna,'PINJAM')!==false){
-	$warna='#F6635C';
-  }
-  elseif(strpos($kodewarna,'KEMBALI')!==false){
-	$warna='#428bca';
-  }	
-  else{
-	$warna= '#fff';
-  }		
-		echo "<tbody>";
-		echo "<tr>";
-		echo "<td style='text-align:center;'>".$nomor++."</td>";
-        echo "<td>".$data['model']."</td>";
-        echo "<td>".$data['nomor_asset']."</td>";
-        echo "<td>".$data['sn']."</td>";
-        echo "<td>".$data['name']."</td>";
-		echo "<td style='text-align:center;' bgcolor=$warna>".$data['status']."</td>";
-        echo "<td>".$data['timestamp']."</td>";
-		echo "</tr>";		
-		echo "</tbody>";
-		?>
-		<?php } ?>
-	</table>
-</body>
-</html>
+echo "</tbody></table>";
+?>

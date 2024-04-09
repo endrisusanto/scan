@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 // Waktu awal dalam detik
-let timeLeft = 10; // 1 menit
+let timeLeft = 60; // 1 menit
 
 // Mendapatkan elemen timer
 const timerElement = document.getElementById('timer');

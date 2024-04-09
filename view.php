@@ -9,6 +9,7 @@
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
 </head>
 <style>
+    
     /* Gaya untuk dark mode */
     .dark-mode {
         background-color: #222;
@@ -83,6 +84,7 @@
         right: 20px;
         z-index: 1000;
     }
+    
 </style>
 <body>
 <div onclick="dashboard()" class="dashboard-form">
@@ -96,12 +98,17 @@
     <table id="dataTable" class="table">
         <thead>
         <tr>
-            <th>Name</th>
             <th>Nomor Asset</th>
-            <th>Model</th>
+            <th>PEMINJAM TERAKHIR</th>
             <th>Status</th>
-            <th>Timestamp</th>
-            <th>Action</th>
+            <th>Waktu Transaksi</th>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>Status Audit</th>
+            <th>Tanggal Pengecekan</th>
+            <th>PLM Holder</th>
+            <th>QR CODE</th>
+            <!-- <th>Action</th> -->
         </tr>
         </thead>
         <tbody>
@@ -112,12 +119,17 @@
         while ($row = mysqli_fetch_assoc($result)) {
             echo "<tr>";
             // Kolom-kolom data
-            echo "<td>" . $row['name'] . "</td>";
             echo "<td>" . $row['nomor_asset'] . "</td>";
-            echo "<td>" . $row['model'] . "</td>";
+            echo "<td>" . $row['name'] . "</td>";
             echo "<td>" . $row['status'] . "</td>";
             echo "<td><a href='#' onclick=\"showModal('" . $row['nomor_asset'] . "')\">" . $row['timestamp'] . "</a></td>";
-            echo "<td><a href='update.php?id=" . $row['id'] . "'>Update</a></td>";
+            echo "<td>" . $row['model'] . "</td>";
+            echo "<td>" . $row['sn'] . "</td>";
+            echo "<td>" . $row['status_audit'] . "</td>";
+            echo "<td><a href='#' onclick=\"showModal1('" . $row['nomor_asset'] . "')\">" . $row['latest_check'] . "</a></td>";
+            echo "<td>" . $row['pic_sample'] . "</td>";
+            echo "<td><img width='60px' src='" . $row['qr'] . "' alt='QR Code' class='qr-code'></td>";
+            // echo "<td><a href='update.php?id=" . $row['id'] . "'>Update</a></td>";
             echo "</tr>";
         }
         ?>
@@ -139,6 +151,24 @@
             <div class="modal-body">
                 <!-- Tempat menampilkan riwayat timestamp -->
                 <div id="timestampHistory"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal untuk riwayat timestamp -->
+<div class="modal fade" id="historyModal1" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel1"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historyModalLabel1">Riwayat Flow Sample</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Tempat menampilkan riwayat timestamp -->
+                <div id="timestampHistory1"></div>
             </div>
         </div>
     </div>
@@ -178,7 +208,20 @@
                 console.error('Error:', error); // Tampilkan error jika terjadi
             });
     }
-
+    function showModal1(nomorAsset) {
+        console.log('Nomor Asset yang diklik:', nomorAsset); // Periksa apakah nomor asset tercetak di konsol
+        // Fetch request untuk mendapatkan data dari database sample berdasarkan nomor asset
+        fetch('get_auditsample_data.php?nomor_asset=' + nomorAsset)
+            .then(response => response.text())
+            .then(data => {
+                console.log('Response:', data); // Periksa respons dari server
+                $('#timestampHistory1').html(data);
+                $('#historyModal1').modal('show');
+            })
+            .catch(error => {
+                console.error('Error:', error); // Tampilkan error jika terjadi
+            });
+    }
     function dashboard() {
         window.location.href = 'index.php';
     }

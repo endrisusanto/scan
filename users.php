@@ -26,6 +26,11 @@ if (!$conn) {
 if ($_SESSION['level']=='super user'){
     $sql = "SELECT * FROM users WHERE 1";
     $result = mysqli_query($conn, $sql);
+    echo '<div onclick="reset()" class="reset-form">
+        <button id="reset" class="btn" title="Reset Audit Sample">
+          <span class="fa fa-recycle"></span>
+        </button>
+      </div>';
 }
 else{
     $pengguna = $_SESSION['name'];
@@ -91,6 +96,27 @@ else{
         right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
         z-index: 1000; /* Pastikan form ada di atas konten lain */
 }
+        .audit-form {
+                position: fixed;
+                top: 65px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+                right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+                z-index: 1000; /* Pastikan form ada di atas konten lain */
+                padding:1px;
+        }
+        .qr-form {
+                position: fixed;
+                top: 110px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+                right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+                z-index: 1000; /* Pastikan form ada di atas konten lain */
+                padding:1px;
+        }
+        .reset-form {
+                position: fixed;
+                top: 155px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+                right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
+                z-index: 1000; /* Pastikan form ada di atas konten lain */
+                padding:1px;
+        }
 .btn {
     background-color: #444; /* Warna latar belakang tombol */
     color: #fff; /* Warna teks tombol */
@@ -102,6 +128,17 @@ else{
 <div onclick="dashboard()" class="dashboard-form">
 <button id="dashboard" class="btn" title="Data Table Dashbord">
   <span class="fa fa-home"></span>
+</button>
+</div>
+<div onclick="audit()" class="audit-form">
+<button id="audit" class="btn" title="Audit Sample">
+  <span class="fa fa-table"></span>
+</button>
+</div>
+
+<div onclick="qr()" class="qr-form">
+<button id="qr" class="btn" title="GENEREATE QR CODE NOMOR ASSET">
+  <span class="fa fa-qrcode"></span>
 </button>
 </div>
     <div class="container">
@@ -220,6 +257,17 @@ document.addEventListener('DOMContentLoaded', function() {
     <script>
 function dashboard() {
     window.location.href = 'index.php';
+}
+</script>
+<script>
+function audit() {
+    window.location.href = 'audit_sample.php';
+}
+function reset() {
+    window.location.href = 'resetstatus_audit.php';
+}
+function qr() {
+    window.location.href = 'generate_qr_asset.php';
 }
 </script>
 </body>

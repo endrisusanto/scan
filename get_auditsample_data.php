@@ -2,7 +2,7 @@
 $conn = mysqli_connect('localhost', 'root', '', 'scan');
 if(isset($_GET['nomor_asset'])) {
     $nomorAsset = $_GET['nomor_asset'];
-    $query = "SELECT * FROM flow_sample WHERE nomor_asset='$nomorAsset'";
+    $query = "SELECT * FROM audit_sample WHERE nomor_asset='$nomorAsset'";
     $result = mysqli_query($conn, $query);
 ?>
 
@@ -55,13 +55,13 @@ if(isset($_GET['nomor_asset'])) {
             box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
             float: left;
         }
-        .timeline-item .timeline-content.PINJAM {
+        .timeline-item .timeline-content.RESET {
             float: right;
 			background-color: #D37676;
 			color: white;
 					 
         }
-		.timeline-item .timeline-content.KEMBALI {
+		.timeline-item .timeline-content.SUDAH {
         background-color: #78A083;
         color: white;
 		}
@@ -69,10 +69,10 @@ if(isset($_GET['nomor_asset'])) {
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .timeline-item .timeline-content.PINJAM .status {
+        .timeline-item .timeline-content.RESET .status {
             color: #fff;
         }
-        .timeline-item .timeline-content.KEMBALI .status {
+        .timeline-item .timeline-content.SUDAH .status {
             color: #fff;
         }
         .timeline-badge {
@@ -97,12 +97,16 @@ if(isset($_GET['nomor_asset'])) {
             <?php while($row = mysqli_fetch_assoc($result)) { ?>
             <li class="timeline-item">
             <div class="timeline-badge"><i class="fa fa-mobile"></i></div>
-                <div class="timeline-content <?php echo $row['status'] == 'PINJAM' ? 'PINJAM' : 'KEMBALI'; ?>">
-                    <div class="status"><?php echo $row['status']; ?></div>
-                    <div class="name"><?php echo $row['name']; ?></div>
+
+                <div class="timeline-content <?php echo $row['status_audit'] == 'SUDAH' ? 'SUDAH' : 'RESET'; ?>">
+                    <div class="status"><?php echo $row['status_audit']; ?></div>
+                    <div class="timestamp"><?php echo "PLM Holder:"; ?></div>
+                    <div class="name"><?php echo $row['pic_sample']; ?></div>
                     <div class="model"><?php echo $row['model']; ?></div>
                     <div class="nomor-asset"><?php echo $row['nomor_asset']; ?></div>
-                    <div class="timestamp"><?php echo $row['timestamp']; ?></div>
+                    <div class="timestamp"><?php echo $row['tanggal_pengecekan']; ?></div>
+                    <div class="timestamp"><?php echo "Checked By:"; ?></div>
+                    <div class="timestamp"><?php echo $row['name']; ?></div>
                 </div>
             </li>
             <?php } ?>
