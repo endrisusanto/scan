@@ -7,70 +7,93 @@ if (!isset($_SESSION['name'])) {
     header("Location: login.php");
     exit();
 }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'];
-    $nomor_asset = $_POST['nomor_asset'];
+    if (isset($_POST['name']) && isset($_POST['nomor_asset'])) {
+        $name = $_POST['name'];
+        $nomor_asset = $_POST['nomor_asset'];
 
-    // Mendapatkan data sebelum update
-    $query = "SELECT * FROM database_sample WHERE nomor_asset='$nomor_asset'";
-    $result = mysqli_query($conn, $query);
-    $dataBeforeUpdate = mysqli_fetch_assoc($result);
-    $model = $dataBeforeUpdate['model']; // Tambahkan variabel model
+        // Mendapatkan data sebelum update
+        $query = "SELECT * FROM database_sample WHERE nomor_asset='$nomor_asset'";
+        $result = mysqli_query($conn, $query);
+        
+        // Memeriksa apakah query berhasil dan data tersedia
+        if ($result && mysqli_num_rows($result) > 0) {
+            $dataBeforeUpdate = mysqli_fetch_assoc($result);
 
+            // Pastikan dataBeforeUpdate bukan null
+            if ($dataBeforeUpdate && isset($dataBeforeUpdate['nomor_asset']) && $dataBeforeUpdate['nomor_asset'] === $nomor_asset) {
+                // Mendapatkan model jika tersedia
+                $model = isset($dataBeforeUpdate['model']) ? $dataBeforeUpdate['model'] : null;
+                $previous_name = isset($dataBeforeUpdate['name']) ? $dataBeforeUpdate['name'] : null;
+                $previous_status = isset($dataBeforeUpdate['status']) ? $dataBeforeUpdate['status'] : null;
 
-    // Jika nama sama dengan sebelumnya
-    if ($name == $dataBeforeUpdate['name']) {
-        // Jika status sebelumnya "pinjam", set status baru menjadi "kembali"
-        if ($dataBeforeUpdate['status'] == 'PINJAM') {
-          $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
-            $newStatus = 'KEMBALI';
-            echo "<div class='alert alert-success' role='alert'>SAMPLE ".$model." BERHASIL DIKEMBALIKAN</div>";
-            echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
-    // Update data di tabel utama
-    $query = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
-    mysqli_query($conn, $query);
+                // Jika nama yang di-post sama dengan nama sebelumnya
+                if ($name === $previous_name) {
+                    // Jika status sebelumnya adalah 'PINJAM'
+                    if ($previous_status === 'PINJAM') {
+                        // Ubah status menjadi 'KEMBALI'
+                        $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
+                        $newStatus = 'KEMBALI';
+                        echo "<div class='alert alert-success' role='alert'>SAMPLE: ".$model."<br>NO. ASSET: ".$nomor_asset."<br>BERHASIL DIKEMBALIKAN <br>PIC: ".$name."</div>";
+                        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 10000);</script>";
 
-    // Simpan riwayat timestamp ke dalam tabel sample
-    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
-    mysqli_query($conn, $insertQuery);
+                        // Update data di tabel utama
+                        $updateQuery = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
+                        mysqli_query($conn, $updateQuery);
+
+                        // Simpan riwayat ke tabel flow_sample
+                        $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')";
+                        mysqli_query($conn, $insertQuery);
+                    } else {
+                        // Jika status sebelumnya bukan 'PINJAM', maka ubah status menjadi 'PINJAM'
+                        $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
+                        $newStatus = 'PINJAM';
+                        echo "<div class='alert alert-info' role='alert'>SAMPLE: ".$model."<br>NO. ASSET: ".$nomor_asset."<br>PEMINJAM: ".$name."</div>";
+                        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 10000);</script>";
+
+                        // Update data di tabel utama
+                        $updateQuery = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
+                        mysqli_query($conn, $updateQuery);
+
+                        // Simpan riwayat ke tabel flow_sample
+                        $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')";
+                        mysqli_query($conn, $insertQuery);
+                    }
+                } else {
+                    // Jika nama yang di-post berbeda dengan nama sebelumnya
+                    $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
+                    $newStatus = 'PINJAM';
+                    
+                    echo "<div class='alert alert-info' role='alert'>SAMPLE: ".$model."<br>NO. ASSET: ".$nomor_asset."<br>PEMINJAM BERGANTI: ".$name."</div>";
+                    echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 10000);</script>";
+                    
+                    // Update data di tabel utama
+                    $updateQuery = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
+                    mysqli_query($conn, $updateQuery);
+
+                    // Simpan riwayat ke tabel flow_sample
+                    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')";
+                    mysqli_query($conn, $insertQuery);
+                            }
+            } else {
+                // Jika dataBeforeUpdate tidak ada, tampilkan pesan
+                echo "<div class='alert alert-danger' role='alert'>DATA TIDAK TERSEDIA</div>";
+                echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 10000);</script>";
+            }
         } else {
-          $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
-            $newStatus = 'PINJAM';
-            echo "<div class='alert alert-danger' role='alert'>SAMPLE: ".$model." | HANDLER: ".$name."</div>";
-            echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
-    // Update data di tabel utama
-    $query = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
-    mysqli_query($conn, $query);
-
-    // Simpan riwayat timestamp ke dalam tabel sample
-    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
-    mysqli_query($conn, $insertQuery);
+            // Jika query tidak berhasil atau tidak ada data
+            echo "<div class='alert alert-danger' role='alert'>DATA TIDAK TERSEDIA</div>";
+            echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 10000);</script>";
         }
     } else {
-      $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
-        // Jika nama berbeda dengan sebelumnya, gunakan status yang di-post dari form
-        // $newStatus = $status;
-        $newStatus = 'PINJAM';
-        echo "<div class='alert alert-danger' role='alert'>SAMPLE: ".$model." | HANDLER: ".$name."</div>";
-        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
-    // Update data di tabel utama
-    $query = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
-    mysqli_query($conn, $query);
-
-    // Simpan riwayat timestamp ke dalam tabel sample
-    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
-    mysqli_query($conn, $insertQuery);
+        // Jika data POST tidak tersedia
+        echo "<div class='alert alert-info' role='alert'>DATA POST TIDAK TERSEDIA</div>";
+        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 10000);</script>";
     }
-
-
-    // Menyimpan riwayat timestamp ke dalam 1 kolom database
-    // $history = array($timestamp, $name);
-    // $historyImploded = implode(',', $history);
-
-
-		   
-	 
 }
+
+
 ?>
 
 
@@ -112,19 +135,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         transform: translate(-50%, -50%) translateY(-60px);
     }
 }
-
     .card {
       margin-bottom: 20px;
     }
     .card-body {
-    max-height: 250px;
+    /* max-height: 250px; */
     overflow-y: auto;
     }
-    /* Gaya untuk dark mode */
-    .dark-mode {
-        background-color: #222;
-        color: #fff;
-    }
+
         /* Gaya untuk tombol dark mode */
     #dark-mode-toggle {
         position: fixed;
@@ -133,47 +151,108 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         z-index: 9999;
     }
 
-    .dark-mode .card {
-        background-color: #333;
-        color: #5b5b5b;
+
+
+/* CSS untuk dark mode */
+.dark-mode {
+    background-color: #222;
+    color: #fff;
+}
+
+/* CSS khusus untuk elemen tabel */
+.dark-mode table {
+    background-color: #333;
+    color: #fff;
+    font-size: 14px; /* Pastikan font-size tetap default */
+}
+/* CSS khusus untuk elemen tabel */
+table {
+    font-size: 14px; /* Pastikan font-size tetap default */
+}
+
+.dark-mode table th,
+.dark-mode table td {
+    background-color: #333;
+    border-color: #555;
+    color: #fff;
+    padding: 4px;
+    font-size: 14px;
+    padding-top: 10px;
+}
+table th,
+table td {
+    font-size: 14px;
+}
+
+.dark-mode table th {
+    background-color: #444;
+    color: #fff;
+    font-size: 14px;
+}
+table th {
+    font-size: 14px;
+}
+
+    /* CSS untuk tombol, kartu, dan elemen lainnya di dark mode */
+.dark-mode .btn {
+    background-color: #444;
+    border-color: #444;
+    color: #fff;
+}
+
+.dark-mode .card {
+    background-color: #333;
+    color: #5b5b5b;
+}
+
+.dark-mode .card-footer {
+    background-color: #5b5b5b;
+    color: #fff;
+}
+
+
+    .modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 20%;
+}
+.dark-mode .modal-content {
+  background-color: #313131;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #2d2d2d;
+  width: 20%;
+}
+
+    .card {
+      margin-bottom: 20px;
     }
-    .dark-mode .card-footer {
-        background-color: #5b5b5b;
-        color: #fff;
+    .card-body {
+    /* max-height: 250px; */
+    overflow-y: auto;
     }
 
-    .dark-mode .btn {
-        background-color: #444;
-        border-color: #444;
-        color: #fff;
+        /* Gaya untuk tombol dark mode */
+    #dark-mode-toggle {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 9999;
     }
-
-    .dark-mode .table {
-        background-color: #333;
-        color: #fff;
-    }
-
-    .dark-mode .table th,
-    .dark-mode .table td {
-        background-color: #333;
-        border-color: #555;
-        color: #fff;
-        padding: 4px;
-        padding-top: 10px;
-    }
-
-    .dark-mode .table th {
-        background-color: #444;
-        color:#ffffff;
-    }
-    
-
-    /* Gaya untuk mengubah tombol saat dihover di dark mode */
-    .dark-mode .btn:hover {
-        background-color: #555;
-        border-color: #555;
-        color: #fff;
-    }
+  
 
     .modal {
   display: none;
@@ -365,7 +444,7 @@ a {
 <div class="container-fluid mt-3">
 <div class="row">
 <?php
-    $sql = "SELECT * FROM database_sample WHERE status = 'PINJAM'"; // Perbarui query SQL
+    $sql = "SELECT * FROM database_sample WHERE status = 'PINJAM' ORDER BY timestamp DESC;"; // Perbarui query SQL
     $result = $conn->query($sql);
 
     $asset_data = array(); // Array untuk menyimpan data nomor asset yang telah dikelompokkan

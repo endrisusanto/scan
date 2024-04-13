@@ -37,8 +37,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               // Simpan riwayat timestamp ke dalam tabel audit_sample
               $insertQuery = "INSERT INTO audit_sample (name, pic_sample, nomor_asset, status_audit, model, tanggal_pengecekan) VALUES ('$name', '{$dataBeforeUpdate['pic_sample']}', '$nomor_asset', '$newStatus', '{$dataBeforeUpdate['model']}', '$latest_check')";
               mysqli_query($conn, $insertQuery);
-              header("Location: audit_sample.php"); // Redirect kembali ke halaman tampilan
-              exit();
+              // header("Location: audit_sample.php"); // Redirect kembali ke halaman tampilan
+              // exit();
           }
       }
   } else {
@@ -118,6 +118,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     color: #fff;
     font-size: 14px; /* Pastikan font-size tetap default */
 }
+/* CSS khusus untuk elemen tabel */
+table {
+    font-size: 14px; /* Pastikan font-size tetap default */
+}
 
 .dark-mode table th,
 .dark-mode table td {
@@ -128,10 +132,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     font-size: 14px;
     padding-top: 10px;
 }
+table th,
+table td {
+    font-size: 14px;
+}
 
 .dark-mode table th {
     background-color: #444;
     color: #fff;
+    font-size: 14px;
+}
+table th {
     font-size: 14px;
 }
 
@@ -211,7 +222,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
         z-index: 1000; /* Pastikan form ada di atas konten lain */
 }
-
+a {
+    padding: 13px;
+    color: #444;
+    background-color: #fff;
+    border-radius:4px;
+}
+.dark-mode a {
+    padding: 13px;
+    color: #ffffff;
+    background-color: #444;
+    border-radius:4px;
+}
 /* CSS untuk posisi timer */
 #timer-container {
   position: fixed;
@@ -227,18 +249,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 #timer {
   font-size: 12px;
 }
-/* a {
-    padding: 13px;
-    color: #444;
-    background-color: #fff;
-    border-radius:4px;
-} */
-/* .dark-mode a {
-    padding: 13px;
-    color: #ffffff;
-    background-color: #444;
-    border-radius:4px;
-} */
+
 /* Animasi glow outline */
 @keyframes glow {
   0% {
@@ -321,7 +332,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="row">
       <?php
       // Query untuk mengambil data dari database
-      $sql = "SELECT * FROM database_sample WHERE 1"; // Perbarui query SQL
+      $sql = "SELECT * FROM database_sample WHERE 1 "; // Perbarui query SQL
       $result = $conn->query($sql);
 
       $audited_data = array(); // Array untuk menyimpan data sample yang sudah diaudit

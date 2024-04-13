@@ -38,6 +38,19 @@ else{
     $result = mysqli_query($conn, $sql);
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Dapatkan nilai input dari form
+    $inputEmail = $_POST['email'];
+
+    // Periksa apakah nilai input sesuai dengan $_SESSION['email']
+    if ($inputEmail === $_SESSION['email']) {
+        // Arahkan pengguna ke halaman logout
+        header('Location: logout.php');
+        exit;
+    } else {
+        echo "Email tidak cocok. Silakan coba lagi.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -96,6 +109,11 @@ else{
         right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
         z-index: 1000; /* Pastikan form ada di atas konten lain */
 }
+#logout_form {
+    position: fixed;
+    top: 50px; /* Sesuaikan dengan jarak atas yang diinginkan */
+    left: 20px; /* Sesuaikan dengan jarak kiri yang diinginkan */
+}
         .audit-form {
                 position: fixed;
                 top: 65px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
@@ -125,6 +143,14 @@ else{
     </style>
 </head>
 <body>
+    <form method="POST" action="" id="logout_form">
+    <div class="form-group">
+        <label for="email">SCAN QR USER TO LOGOUT</label><br>
+        <input type="text" id="email" name="email" required>
+        </div>
+        <input hidden type="submit" value="Submit">
+    </form>
+    
 <div onclick="dashboard()" class="dashboard-form">
 <button id="dashboard" class="btn" title="Data Table Dashbord">
   <span class="fa fa-home"></span>
@@ -229,30 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-    <script>
-        // Function to parse QR code value
-        function parseQRCodeValue(value) {
-            // Replace this with your actual logout logic
-            var currentUserEmail = "<?php echo explode('@', $_SESSION['email'])[1]; ?>";
-            if (value.includes(currentUserEmail)) {
-                window.location.href = 'logout.php';
-            }
-        }
 
-        // Function to check QR code after 5 seconds
-        setTimeout(function() {
-            checkQRCode();
-        }, 5000);
-
-        // Function to check if the QR code value is received
-        function checkQRCode() {
-            // Replace this with your actual QR scanning logic
-            var scannedQRValue = prompt("SCAN QR CODE USER UNTUK LOGOUT");
-            if (scannedQRValue != null) {
-                parseQRCodeValue(scannedQRValue);
-            }
-        }
-    </script>
     </div>
     <script>
 function dashboard() {
