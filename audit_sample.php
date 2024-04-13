@@ -16,26 +16,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $query = "SELECT * FROM database_sample WHERE nomor_asset='$nomor_asset'";
     $result = mysqli_query($conn, $query);
     $dataBeforeUpdate = mysqli_fetch_assoc($result);
-    $status_audit = $dataBeforeUpdate['status_audit'];
-
-    // Jika status sebelumnya adalah "SUDAH", tampilkan alert "Sudah Dicheck"
-    if ($status_audit == 'SUDAH') {
-        echo "<div class='alert alert-success' role='alert'>SUDAH DICHECK</div>";
-        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 2000);</script>";
-    } else if ($status_audit == 'RESET' || $status_audit == 'null')  {
-        $newStatus = 'SUDAH';
-        $latest_check = date('Y-m-d H:i:s'); // Timestamp saat ini
-
-    // Update data di tabel utama
-    $query = "UPDATE database_sample SET status_audit='$newStatus', latest_check='$latest_check' WHERE nomor_asset='$nomor_asset'";
-    mysqli_query($conn, $query);
-
-    // Simpan riwayat timestamp ke dalam tabel sample
-    $insertQuery = "INSERT INTO audit_sample (name, pic_sample, nomor_asset, status_audit, model, tanggal_pengecekan) VALUES ('$name', '{$dataBeforeUpdate['pic_sample']}', '$nomor_asset', '$newStatus', '{$dataBeforeUpdate['model']}', '$latest_check')";
-    mysqli_query($conn, $insertQuery);
-    header("Location: audit_sample.php"); // Redirect kembali ke halaman tampilan
-    exit();
-    }
+    if (isset($dataBeforeUpdate) && isset($dataBeforeUpdate['nomor_asset']) && $nomor_asset == $dataBeforeUpdate['nomor_asset']) {
+      // Periksa apakah status_audit ada dan sudah diatur
+      if (isset($dataBeforeUpdate['status_audit'])) {
+          $status_audit = $dataBeforeUpdate['status_audit'];
+  
+          if ($status_audit == 'SUDAH') {
+              echo "<div class='alert alert-success' role='alert'>SUDAH DICHECK</div>";
+              echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 2000);</script>";
+          } else if ($status_audit == 'RESET' || $status_audit == 'null') {
+              echo "<div class='alert alert-info' role='alert'>BERHASIL DICHECK</div>";
+              echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 2000);</script>";
+              $newStatus = 'SUDAH';
+              $latest_check = date('Y-m-d H:i:s'); // Timestamp saat ini
+  
+              // Update data di tabel utama
+              $query = "UPDATE database_sample SET status_audit='$newStatus', latest_check='$latest_check' WHERE nomor_asset='$nomor_asset'";
+              mysqli_query($conn, $query);
+  
+              // Simpan riwayat timestamp ke dalam tabel audit_sample
+              $insertQuery = "INSERT INTO audit_sample (name, pic_sample, nomor_asset, status_audit, model, tanggal_pengecekan) VALUES ('$name', '{$dataBeforeUpdate['pic_sample']}', '$nomor_asset', '$newStatus', '{$dataBeforeUpdate['model']}', '$latest_check')";
+              mysqli_query($conn, $insertQuery);
+              header("Location: audit_sample.php"); // Redirect kembali ke halaman tampilan
+              exit();
+          }
+      }
+  } else {
+      echo "<div class='alert alert-info' role='alert'>DATA TIDAK TERSEDIA</div>";
+      echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 2000);</script>";
+  }
+  
+  
 }
 ?>
 
@@ -49,19 +60,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <!-- Tambahkan Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Tambahkan Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <style>
-    .alert {
+.alert {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
-    padding: 40px;
+    padding: 60px;
+    width:100%;
+    text-align:center;
     border-radius: 5px;
-    animation: floatAlert 4s ease-out forwards;
+    animation: floatAlert 10s ease-out forwards;
     font-size: 64px;
 }
 
@@ -75,7 +88,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         transform: translate(-50%, -50%) translateY(-60px);
     }
 }
-
     .card {
       margin-bottom: 20px;
     }
@@ -83,24 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     /* max-height: 250px; */
     overflow-y: auto;
     }
-    .table th,
-    .table td {
-        /* background-color: #333;
-        border-color: #555;
-        color: #fff; */
-        padding: 4px;
-        padding-top: 10px;
-    }
 
-    .table th {
-        /* background-color: #444;
-        color:#ffffff; */
-    }
-    /* Gaya untuk dark mode */
-    .dark-mode {
-        background-color: #222;
-        color: #fff;
-    }
         /* Gaya untuk tombol dark mode */
     #dark-mode-toggle {
         position: fixed;
@@ -109,47 +104,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         z-index: 9999;
     }
 
-    .dark-mode .card {
-        background-color: #333;
-        color: #5b5b5b;
-    }
-    .dark-mode .card-footer {
-        background-color: #5b5b5b;
-        color: #fff;
-    }
 
-    .dark-mode .btn {
-        background-color: #444;
-        border-color: #444;
-        color: #fff;
-    }
 
-    .dark-mode .table {
-        background-color: #333;
-        color: #fff;
-    }
+/* CSS untuk dark mode */
+.dark-mode {
+    background-color: #222;
+    color: #fff;
+}
 
-    .dark-mode .table th,
-    .dark-mode .table td {
-        background-color: #333;
-        border-color: #555;
-        color: #fff;
-        padding: 4px;
-        padding-top: 10px;
-    }
+/* CSS khusus untuk elemen tabel */
+.dark-mode table {
+    background-color: #333;
+    color: #fff;
+    font-size: 14px; /* Pastikan font-size tetap default */
+}
 
-    .dark-mode .table th {
-        background-color: #444;
-        color:#ffffff;
-    }
-    
+.dark-mode table th,
+.dark-mode table td {
+    background-color: #333;
+    border-color: #555;
+    color: #fff;
+    padding: 4px;
+    font-size: 14px;
+    padding-top: 10px;
+}
 
-    /* Gaya untuk mengubah tombol saat dihover di dark mode */
-    .dark-mode .btn:hover {
-        background-color: #555;
-        border-color: #555;
-        color: #fff;
-    }
+.dark-mode table th {
+    background-color: #444;
+    color: #fff;
+    font-size: 14px;
+}
+
+    /* CSS untuk tombol, kartu, dan elemen lainnya di dark mode */
+.dark-mode .btn {
+    background-color: #444;
+    border-color: #444;
+    color: #fff;
+}
+
+.dark-mode .card {
+    background-color: #333;
+    color: #5b5b5b;
+}
+
+.dark-mode .card-footer {
+    background-color: #5b5b5b;
+    color: #fff;
+}
+
 
     .modal {
   display: none;
@@ -225,18 +227,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 #timer {
   font-size: 12px;
 }
-a {
+/* a {
     padding: 13px;
     color: #444;
     background-color: #fff;
     border-radius:4px;
-}
-.dark-mode a {
+} */
+/* .dark-mode a {
     padding: 13px;
     color: #ffffff;
     background-color: #444;
     border-radius:4px;
-}
+} */
 /* Animasi glow outline */
 @keyframes glow {
   0% {
@@ -386,7 +388,6 @@ a {
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="script.js"></script>
 <script>
 document.getElementById("uploadBtn").addEventListener("click", function() {
   document.getElementById("uploadModal").style.display = "block";
@@ -481,29 +482,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     fullscreenToggle.addEventListener('click', toggleFullScreen);
     
-});
-</script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    var inputField1 = document.getElementById('email');
-    var inputField2 = document.getElementById('password');
-    
-    inputField1.focus(); // Focus on the first input field
-    
-    // Event listener to check if the value of inputField1 ends with ".com" and focus on inputField2
-    inputField1.addEventListener('input', function() {
-        if (inputField1.value.endsWith('.com')) {
-            inputField2.focus(); // Focus on the second input field
-        }
-    });
-
-    // Event listener to handle clicks outside the input fields
-    document.addEventListener('click', function(event) {
-        if (event.target !== inputField1 && event.target !== inputField2) {
-            // If clicked outside both input fields
-            inputField1.focus(); // Focus back on the first input field
-        }
-    });
 });
 </script>
 

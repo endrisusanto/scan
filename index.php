@@ -1,10 +1,75 @@
 <?php
 session_start();
+$conn = mysqli_connect('localhost', 'root', '', 'scan');
 
 // Check if user is logged in, if not, redirect to login page
 if (!isset($_SESSION['name'])) {
     header("Location: login.php");
     exit();
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $nomor_asset = $_POST['nomor_asset'];
+
+    // Mendapatkan data sebelum update
+    $query = "SELECT * FROM database_sample WHERE nomor_asset='$nomor_asset'";
+    $result = mysqli_query($conn, $query);
+    $dataBeforeUpdate = mysqli_fetch_assoc($result);
+    $model = $dataBeforeUpdate['model']; // Tambahkan variabel model
+
+
+    // Jika nama sama dengan sebelumnya
+    if ($name == $dataBeforeUpdate['name']) {
+        // Jika status sebelumnya "pinjam", set status baru menjadi "kembali"
+        if ($dataBeforeUpdate['status'] == 'PINJAM') {
+          $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
+            $newStatus = 'KEMBALI';
+            echo "<div class='alert alert-success' role='alert'>SAMPLE ".$model." BERHASIL DIKEMBALIKAN</div>";
+            echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+    // Update data di tabel utama
+    $query = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
+    mysqli_query($conn, $query);
+
+    // Simpan riwayat timestamp ke dalam tabel sample
+    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
+    mysqli_query($conn, $insertQuery);
+        } else {
+          $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
+            $newStatus = 'PINJAM';
+            echo "<div class='alert alert-danger' role='alert'>SAMPLE: ".$model." | HANDLER: ".$name."</div>";
+            echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+    // Update data di tabel utama
+    $query = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
+    mysqli_query($conn, $query);
+
+    // Simpan riwayat timestamp ke dalam tabel sample
+    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
+    mysqli_query($conn, $insertQuery);
+        }
+    } else {
+      $timestamp = date('Y-m-d H:i:s'); // Timestamp saat ini
+        // Jika nama berbeda dengan sebelumnya, gunakan status yang di-post dari form
+        // $newStatus = $status;
+        $newStatus = 'PINJAM';
+        echo "<div class='alert alert-danger' role='alert'>SAMPLE: ".$model." | HANDLER: ".$name."</div>";
+        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+    // Update data di tabel utama
+    $query = "UPDATE database_sample SET name='$name', nomor_asset='$nomor_asset', status='$newStatus', timestamp='$timestamp' WHERE nomor_asset='$nomor_asset'";
+    mysqli_query($conn, $query);
+
+    // Simpan riwayat timestamp ke dalam tabel sample
+    $insertQuery = "INSERT INTO flow_sample (name, nomor_asset, status, model, timestamp) VALUES ('$name', '$nomor_asset', '$newStatus', '$model', '$timestamp')"; // Perbarui query INSERT
+    mysqli_query($conn, $insertQuery);
+    }
+
+
+    // Menyimpan riwayat timestamp ke dalam 1 kolom database
+    // $history = array($timestamp, $name);
+    // $historyImploded = implode(',', $history);
+
+
+		   
+	 
 }
 ?>
 
@@ -23,6 +88,31 @@ if (!isset($_SESSION['name'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
   <style>
+.alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    padding: 60px;
+    width:100%;
+    text-align:center;
+    border-radius: 5px;
+    animation: floatAlert 10s ease-out forwards;
+    font-size: 64px;
+}
+
+@keyframes floatAlert {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(-30px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(-60px);
+    }
+}
+
     .card {
       margin-bottom: 20px;
     }
@@ -240,10 +330,10 @@ a {
         </div>
     </div>
 </div>
-<h2><center><strong>PORTAL SIMPAN PINJAM TKDN SW</strong></center></h2>
+<h2><center><strong>KOPERASI SIMPAN PINJAM TKDN SW</strong></center></h2>
 
 <div class="container mt-3">
-<form action="update_process.php"method="POST" id="assetForm">
+<form action="" method="POST" id="assetForm">
     <div class="form-group">
         <label for="name">User Name</label>
         <input type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
