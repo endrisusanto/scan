@@ -113,6 +113,8 @@
         </thead>
         <tbody>
         <?php
+        // Mengatur zona waktu ke GMT +7
+        date_default_timezone_set('Asia/Jakarta'); // Zona waktu untuk GMT +7
         $conn = mysqli_connect('localhost', 'root', '', 'scan');
         $query = "SELECT * FROM database_sample";
         $result = mysqli_query($conn, $query);

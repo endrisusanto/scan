@@ -1,4 +1,7 @@
 <?php
+// Mengatur zona waktu ke GMT +7
+date_default_timezone_set('Asia/Jakarta'); // Zona waktu untuk GMT +7
+
 session_start();
 $conn = mysqli_connect('localhost', 'root', '', 'scan');
 
@@ -7,6 +10,7 @@ if (!isset($_SESSION['name'])) {
     header("Location: login.php");
     exit();
 }
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['name']) && isset($_POST['nomor_asset'])) {
@@ -450,20 +454,50 @@ a {
     $asset_data = array(); // Array untuk menyimpan data nomor asset yang telah dikelompokkan
 
     if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $nama = $row['name'];
-            $nomor_asset = $row['nomor_asset'];
-            $model = $row['model']; // Menambah kolom model
-            $timestamp = $row['timestamp']; // Menambah kolom timestamp
-            
-            // Jika nomor asset dengan nama yang sama sudah ada dalam array, tambahkan nomor asset ke tabel yang sudah ada
-            if(array_key_exists($nama, $asset_data)) {
-                $asset_data[$nama] .= "<tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
-            } else { // Jika nomor asset dengan nama yang sama belum ada dalam array, buat tabel baru
-                $asset_data[$nama] = "<table class='table table-striped'><thead><tr><th>No. Asset</th><th>Model</th><th>Timestamp</th></tr></thead><tbody><tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
-            }
+// Sebelumnya Anda mendeklarasikan array untuk menyimpan data dari hasil query
+$asset_data = [];
 
-        }
+// Memproses hasil query dari database
+while ($row = $result->fetch_assoc()) {
+    $nama = $row['name'];
+    $nomor_asset = $row['nomor_asset'];
+    $model = $row['model'];
+    $timestamp = $row['timestamp'];
+    
+    // Menghitung selisih waktu antara timestamp dan waktu sekarang dalam detik
+    $selisih_detik = strtotime('now') - strtotime($timestamp);
+
+    // Simpan data pada variabel array
+    if (array_key_exists($nama, $asset_data)) {
+        $asset_data[$nama] .= "<tr>
+            <td>$nomor_asset</td>
+            <td>$model</td>
+            <td class='selisih' data-timestamp='$timestamp'></td>
+            <td hidden>$timestamp</td>
+        </tr>";
+    } else {
+        $asset_data[$nama] = "<table class='table table-striped'>
+            <thead>
+                <tr><th>No. Asset</th><th>Model</th><th>Lama Pinjam</th><th hidden>Timestamp</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$nomor_asset</td>
+                    <td>$model</td>
+                    <td class='selisih' data-timestamp='$timestamp'></td>
+                    <td hidden>$timestamp</td>
+                </tr>";
+    }
+}
+
+// Jangan lupa untuk menutup tabel pada akhir array
+foreach ($asset_data as &$data) {
+    $data .= "</tbody></table>";
+}
+
+
+
+
         
         // Tampilkan card dengan tabel-tabel yang sudah dikelompokkan
         foreach ($asset_data as $nama => $table) {
@@ -661,5 +695,66 @@ const timerInterval = setInterval(countdown, 1000);
 // Memastikan tampilan timer terupdate pertama kali
 updateTimer();
 </script>
+<script>
+// Fungsi untuk menghitung selisih waktu
+function hitungSelisihWaktu(timestamp) {
+    // Mengonversi timestamp ke milidetik
+    const waktuStamp = new Date(timestamp).getTime();
+    
+    // Mendapatkan waktu sekarang di GMT +7
+    const sekarang = new Date();
+    const timezoneOffsetSekarang = sekarang.getTimezoneOffset() * 60000; // Konversi menit ke milidetik
+    const waktuSekarangGMTPlus7 = sekarang.getTime() + (timezoneOffsetSekarang + (7 * 3600000)); // 7 * 3600000 = 7 jam dalam milidetik
+
+    // Hitung selisih waktu dalam detik
+    const selisihDetik = Math.floor((waktuSekarangGMTPlus7 - waktuStamp) / 1000);
+    
+    // Hitung hari, jam, menit, dan detik dari selisih waktu
+    const hari = Math.floor(selisihDetik / 86400);
+    const jam = Math.floor((selisihDetik % 86400) / 3600);
+    const menit = Math.floor(((selisihDetik % 86400) % 3600) / 60);
+    const detik = ((selisihDetik % 86400) % 3600) % 60;
+
+    // Format hasil selisih waktu
+    let hasilSelisih = '';
+    if (hari > 0) {
+        hasilSelisih += hari + ' hari ';
+    }
+    if (jam > 0) {
+        hasilSelisih += jam + ' jam ';
+        // Jangan tambahkan detik jika ada jam
+    } else {
+        // Tambahkan menit dan detik jika tidak ada jam
+        if (menit > 0) {
+            hasilSelisih += menit + ' menit ';
+        }
+        if (menit === 0 && detik > 0) {
+            hasilSelisih += detik + ' detik';
+        }
+    }
+
+    return hasilSelisih.trim();
+}
+
+// Fungsi untuk memperbarui kolom selisih waktu
+function updateSelisihWaktu() {
+    const selisihElements = document.querySelectorAll('td.selisih');
+
+    selisihElements.forEach(function(element) {
+        const timestamp = element.getAttribute('data-timestamp');
+        const selisihWaktu = hitungSelisihWaktu(timestamp);
+        element.textContent = selisihWaktu;
+    });
+}
+
+// Memperbarui kolom selisih waktu setiap detik
+setInterval(updateSelisihWaktu, 1000);
+
+// Panggil fungsi saat halaman dimuat untuk memperbarui selisih waktu pertama kali
+document.addEventListener('DOMContentLoaded', function() {
+    updateSelisihWaktu();
+});
+
+  </script>
 </body>
 </html>

@@ -88,11 +88,11 @@
                         <form id="registerForm" action="register_process.php" method="post">
                             <div class="form-group">
                                 <label for="name">Name:</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <input type="text" class="form-control" id="name" name="name" onkeyup="convertToUppercase(this)" required>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="email" class="form-control" id="email" name="email" onkeyup="convertToLowercase(this)" required>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password:</label>
@@ -219,5 +219,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   </script>
+  <script>
+function convertToUppercase(input) {
+  input.value = input.value.toUpperCase();
+}
+function convertToLowercase(input) {
+  input.value = input.value.toLowerCase();
+}
+</script>
 </body>
 </html>

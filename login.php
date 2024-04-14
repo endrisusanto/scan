@@ -1,3 +1,15 @@
+<?php
+session_start(); // Pastikan session sudah dimulai
+
+// Jika pengguna sudah login, arahkan ke index.php
+if (isset($_SESSION['name'])) {
+    header("Location: index.php");
+    exit();
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
