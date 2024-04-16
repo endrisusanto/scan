@@ -13,7 +13,7 @@ Selamat datang di repositori **Sistem Inventory Peminjaman Aset**! Sistem ini di
 
 1. **Unduh Repositori**:
     ```bash
-    git clone https://github.com/nama-akun/nama-repo.git
+    git clone https://github.com/endrisusanto/scan.git
     ```
 
 2. **Masuk ke Direktori Proyek**:
