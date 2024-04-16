@@ -78,7 +78,7 @@ if (isset($_SESSION['alert_message'])) {
       margin-bottom: 20px;
     }
     .card-body {
-    /* max-height: 250px; */
+    max-height: 250px;
     overflow-y: auto;
     }
 
@@ -354,7 +354,7 @@ a {
 <form action="pinjam_process.php" method="POST" id="assetForm">
     <div class="form-group">
         <label for="name">User Name</label>
-        <input type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
+        <input readonly type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
     </div>
     <div class="form-group">
         <label for="nomor_asset">Asset Number</label>

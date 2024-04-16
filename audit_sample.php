@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       margin-bottom: 20px;
     }
     .card-body {
-    /* max-height: 250px; */
+    max-height: 250px;
     overflow-y: auto;
     }
 
@@ -320,7 +320,7 @@ a {
     <form action="" method="POST" id="assetForm">
       <div class="form-group">
         <label for="name">PIC check</label>
-        <input type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
+        <input readonly type="text" class="form-control" id="name" name="name" value="<?php echo $_SESSION['name']?>">
       </div>
       <div class="form-group">
         <label for="nomor_asset">Asset Number</label>
@@ -360,6 +360,7 @@ a {
           $pic_sample = $row['pic_sample'];
           $nomor_asset = $row['nomor_asset'];
           $model = $row['model']; // Menambah kolom model
+          $sn = $row['sn']; // Menambah kolom model
           $timestamp = $row['timestamp']; // Menambah kolom timestamp
           $status = $row['status_audit']; // Menambah kolom status
 
@@ -368,13 +369,13 @@ a {
             if(array_key_exists($pic_sample, $audited_data)) {
               $audited_data[$pic_sample] .= "<tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
             } else {
-              $audited_data[$pic_sample] = "<table class='table table-striped'><thead><tr><th>No. Asset</th><th>Model</th><th>Timestamp</th></tr></thead><tbody><tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
+              $audited_data[$pic_sample] = "<table class='table table-striped'><thead><tr><th>No. Asset</th><th>Model</th><th>IMEI/SN</th></tr></thead><tbody><tr><td>$nomor_asset</td><td>$model</td><td>$sn</td></tr>";
             }
           } else { // Jika status adalah 'Unaudited', tambahkan ke array unaudited_data
             if(array_key_exists($pic_sample, $unaudited_data)) {
-              $unaudited_data[$pic_sample] .= "<tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
+              $unaudited_data[$pic_sample] .= "<tr><td>$nomor_asset</td><td>$model</td><td>$sn</td></tr>";
             } else {
-              $unaudited_data[$pic_sample] = "<table class='table table-striped'><thead><tr><th>No. Asset</th><th>Model</th><th>Timestamp</th></tr></thead><tbody><tr><td>$nomor_asset</td><td>$model</td><td>$timestamp</td></tr>";
+              $unaudited_data[$pic_sample] = "<table class='table table-striped'><thead><tr><th>No. Asset</th><th>Model</th><th>IMEI/SN</th></tr></thead><tbody><tr><td>$nomor_asset</td><td>$model</td><td>$sn</td></tr>";
             }
           }
         }
@@ -511,6 +512,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
 });
 </script>
+<script>
+  // Fungsi untuk menghasilkan warna acak dalam format hex dari palet warna soft
+  function randomSoftColor() {
+  var softColors = ['#F0EAD6', '#D0E0E3', '#E6E6FA', '#FFDAB9', '#B0C4DE', '#FFE4E1', '#FFB6C1', '#87CEFA', '#F08080', '#20B2AA', '#9370DB', '#FFA07A']; // Daftar warna soft termasuk 10 warna tambahan
+  return softColors[Math.floor(Math.random() * softColors.length)];
+}
 
+
+  // Mengambil semua elemen dengan kelas 'card-header'
+  var cardHeaders = document.querySelectorAll('.card-header');
+
+  // Loop melalui setiap elemen dan atur background color dengan warna acak soft
+  cardHeaders.forEach(function(header) {
+    header.style.backgroundColor = randomSoftColor();
+  });
+</script>
 </body>
 </html>
