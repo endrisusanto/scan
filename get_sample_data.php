@@ -65,14 +65,14 @@ if(isset($_GET['nomor_asset'])) {
         background-color: #78A083;
         color: white;
 		}
-        .timeline-item .timeline-content .status {
+        .timeline-item .timeline-content .status_pinjam {
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .timeline-item .timeline-content.PINJAM .status {
+        .timeline-item .timeline-content.PINJAM .status_pinjam {
             color: #fff;
         }
-        .timeline-item .timeline-content.KEMBALI .status {
+        .timeline-item .timeline-content.KEMBALI .status_pinjam {
             color: #fff;
         }
         .timeline-badge {
@@ -97,8 +97,8 @@ if(isset($_GET['nomor_asset'])) {
             <?php while($row = mysqli_fetch_assoc($result)) { ?>
             <li class="timeline-item">
             <div class="timeline-badge"><i class="fa fa-mobile"></i></div>
-                <div class="timeline-content <?php echo $row['status'] == 'PINJAM' ? 'PINJAM' : 'KEMBALI'; ?>">
-                    <div class="status"><?php echo $row['status']; ?></div>
+                <div class="timeline-content <?php echo $row['status_pinjam'] == 'PINJAM' ? 'PINJAM' : 'KEMBALI'; ?>">
+                    <div class="status_pinjam"><?php echo $row['status_pinjam']; ?></div>
                     <div class="name"><?php echo $row['name']; ?></div>
                     <div class="model"><?php echo $row['model']; ?></div>
                     <div class="nomor-asset"><?php echo $row['nomor_asset']; ?></div>

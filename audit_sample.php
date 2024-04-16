@@ -64,6 +64,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <style>
+  a {
+    padding: 13px;
+    color: #444;
+    background-color: #fff;
+    border-radius:4px;
+    
+    
+}
+.dark-mode a {
+    padding: 13px;
+    color: #ffffff;
+    background-color: #444;
+    border-radius:4px;
+}
 .alert {
     position: fixed;
     top: 50%;
@@ -116,11 +130,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 .dark-mode table {
     background-color: #333;
     color: #fff;
-    font-size: 14px; /* Pastikan font-size tetap default */
+    font-size: 11px; /* Pastikan font-size tetap default */
 }
 /* CSS khusus untuk elemen tabel */
 table {
-    font-size: 14px; /* Pastikan font-size tetap default */
+    font-size: 11px; /* Pastikan font-size tetap default */
 }
 
 .dark-mode table th,
@@ -129,21 +143,21 @@ table {
     border-color: #555;
     color: #fff;
     padding: 4px;
-    font-size: 14px;
+    font-size: 11px;
     padding-top: 10px;
 }
 table th,
 table td {
-    font-size: 14px;
+    font-size: 11px;
 }
 
 .dark-mode table th {
     background-color: #444;
     color: #fff;
-    font-size: 14px;
+    font-size: 11px;
 }
 table th {
-    font-size: 14px;
+    font-size: 11px;
 }
 
     /* CSS untuk tombol, kartu, dan elemen lainnya di dark mode */
@@ -205,6 +219,7 @@ table th {
     position: fixed;
     top: 50px; /* Sesuaikan dengan jarak atas yang diinginkan */
     left: 20px; /* Sesuaikan dengan jarak kiri yang diinginkan */
+    width: 10%;
 }
 .container-fluid {
     padding-right: 5%;
@@ -215,6 +230,7 @@ table th {
         top: 20px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
         right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
         z-index: 1000; /* Pastikan form ada di atas konten lain */
+        /* width:20px; */
 }
 .dashboard-form {
         position: fixed;
@@ -383,7 +399,7 @@ a {
                 <h3><strong><center>$pic_sample</center></h3></strong>
               </div>
               <div class='card-body'>$table</tbody></table></div>
-              <div class='card-footer'>JUMLAH SAMPLE YANG BELUM DICHECK <span class='badge'>$total_rows</span></div>
+              <div class='card-footer'>SAMPLE YANG BELUM DICHECK <span class='badge'>$total_rows</span></div>
             </div>
           </div>";
         }

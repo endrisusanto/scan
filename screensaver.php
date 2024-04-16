@@ -130,7 +130,7 @@ a {
 </head>
 <body>
 
-<h2><center><strong>PORTAL SIMPAN PINJAM TKDN SW</strong></center></h2>
+<h2><center><strong>KOPERASI SIMPAN PINJAM TKDN SW</strong></center></h2>
   <?php
   include 'koneksi.php';
   ?>
@@ -140,7 +140,7 @@ a {
 <?php
     // Mengatur zona waktu ke GMT +7
     date_default_timezone_set('Asia/Jakarta'); // Zona waktu untuk GMT +7
-    $sql = "SELECT * FROM database_sample WHERE status = 'PINJAM'"; // Perbarui query SQL
+    $sql = "SELECT * FROM database_sample WHERE status_pinjam = 'PINJAM'"; // Perbarui query SQL
     $result = $conn->query($sql);
 
     $asset_data = array(); // Array untuk menyimpan data nomor asset yang telah dikelompokkan
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('touchstart', redirectToLoginPage);
     document.addEventListener('keydown', redirectToLoginPage);
-    // document.addEventListener('mousedown', redirectToLoginPage);
+    document.addEventListener('mousedown', redirectToLoginPage);
 </script>
 
 <script>

@@ -123,7 +123,7 @@
             // Kolom-kolom data
             echo "<td>" . $row['nomor_asset'] . "</td>";
             echo "<td>" . $row['name'] . "</td>";
-            echo "<td>" . $row['status'] . "</td>";
+            echo "<td>" . $row['status_pinjam'] . "</td>";
             echo "<td><a href='#' onclick=\"showModal('" . $row['nomor_asset'] . "')\">" . $row['timestamp'] . "</a></td>";
             echo "<td>" . $row['model'] . "</td>";
             echo "<td>" . $row['sn'] . "</td>";

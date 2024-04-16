@@ -59,9 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  
 
+    <!-- Tambahkan Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
 
             /* Gaya untuk dark mode */
@@ -110,10 +114,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         z-index: 1000; /* Pastikan form ada di atas konten lain */
 }
 #logout_form {
-    position: fixed;
-    top: 50px; /* Sesuaikan dengan jarak atas yang diinginkan */
-    left: 20px; /* Sesuaikan dengan jarak kiri yang diinginkan */
+    position: relative;
+    top: 5px; /* Sesuaikan dengan jarak atas yang diinginkan */
+    left: 10px; /* Sesuaikan dengan jarak kiri yang diinginkan */
 }
+
         .audit-form {
                 position: fixed;
                 top: 65px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
@@ -255,6 +260,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dapatkan elemen form
+    const logoutForm = document.getElementById('logout_form');
+
+    // Dapatkan elemen input dengan ID "email"
+    const emailInput = document.getElementById('email');
+
+    // Email sesi dari variabel PHP
+    const sessionEmail = "<?php echo $_SESSION['email']; ?>";
+
+    // Fungsi untuk memeriksa dan melakukan logout jika email cocok
+    function checkEmailAndLogout() {
+        // Ambil nilai email dari input
+        let emailValue = emailInput.value;
+
+        // Potong emailValue hingga ".com"
+        let endIndex = emailValue.indexOf('.com') + 4; // ".com" memiliki panjang 4 karakter
+        let emailPrefix = emailValue.slice(0, endIndex);
+
+        // Bandingkan emailPrefix dengan sessionEmail
+        if (emailPrefix === sessionEmail) {
+            // Jika cocok, arahkan ke logout.php
+            window.location.href = 'logout.php';
+        }
+    }
+
+    // Tambahkan event listener ke form
+    logoutForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Mencegah pengiriman form secara default
+        checkEmailAndLogout(); // Panggil fungsi pemeriksaan dan logout
+    });
+});
+
+
+    </script>
 
     </div>
     <script>
