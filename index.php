@@ -240,11 +240,17 @@ table th {
     padding-right: 5%;
     padding-left: 12%;
 }
-.users-form {
+.dashboard-form {
         position: fixed;
-        top: 20px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        top: 15px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
         right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
         z-index: 1000; /* Pastikan form ada di atas konten lain */
+}
+.users-form{
+    position: fixed; 
+    bottom: 20px; 
+    right: 20px; 
+    z-index: 9999;
 }
 .export-form {
         position: fixed;
@@ -254,16 +260,16 @@ table th {
 }
 .upload-form {
         position: fixed;
-        top: 100px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
+        top: 112px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
         right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
         z-index: 1000; /* Pastikan form ada di atas konten lain */
 }
-.dashboard-form {
+/* .dashboard-form {
         position: fixed;
-        top: 140px; /* Sesuaikan dengan jarak dari atas yang diinginkan */
-        right: 20px; /* Sesuaikan dengan jarak dari kanan yang diinginkan */
-        z-index: 1000; /* Pastikan form ada di atas konten lain */
-}
+        top: 140px; 
+        right: 20px; 
+        z-index: 1000; 
+} */
 /* CSS untuk posisi timer */
 #timer-container {
   position: fixed;
@@ -314,19 +320,19 @@ a {
 <body>
 <div class="users-form">
 <a href="users.php">
-  <span class="fa fa-user-circle"></span></a>
+  <span class="fa fa-user-circle"></span> LOGOUT</a>
 </div>
 <div class="export-form">
 <a href="export_database.php">
-  <span class="fa fa-download"></span></a>
+  <span class="fa fa-download"></span> EXPORT</a>
 </div>
 <div class="upload-form">
 <a href="import.php">
-  <span class="fa fa-upload"></span></a>
+  <span class="fa fa-upload"></span> IMPORT</a>
 </div>
 <div onclick="dashboard()" class="dashboard-form">
 <button id="dashboard" class="btn" title="Data Table Dashbord">
-  <span class="fa fa-table"></span>
+  <span class="fa fa-table"> </span> DATA TABLE
 </button>
 </div>
 <div id="uploadModal" class="modal">
@@ -489,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<button id="fullscreen-toggle" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;" title="FullScreen Mode"><i class="fas fa-expand"></i></button>
+<!-- <button id="fullscreen-toggle" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;" title="FullScreen Mode"><i class="fas fa-expand"></i></button> -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const fullscreenToggle = document.getElementById('fullscreen-toggle');
