@@ -656,26 +656,22 @@ function hitungSelisihWaktu(timestamp) {
     const menit = Math.floor(((selisihDetik % 86400) % 3600) / 60);
     const detik = ((selisihDetik % 86400) % 3600) % 60;
 
-    // Format hasil selisih waktu
+    // Format hasil selisih waktu dengan dua nilai
     let hasilSelisih = '';
+    
     if (hari > 0) {
-        hasilSelisih += hari + ' hari ';
-    }
-    if (jam > 0) {
-        hasilSelisih += jam + ' jam ';
-        // Jangan tambahkan detik jika ada jam
+        hasilSelisih = hari + ' hari ' + jam + ' jam';
+    } else if (jam > 0) {
+        hasilSelisih = jam + ' jam ' + menit + ' menit';
+    } else if (menit > 0) {
+        hasilSelisih = menit + ' menit ' + detik + ' detik';
     } else {
-        // Tambahkan menit dan detik jika tidak ada jam
-        if (menit > 0) {
-            hasilSelisih += menit + ' menit ';
-        }
-        if (menit === 0 && detik > 0) {
-            hasilSelisih += detik + ' detik';
-        }
+        hasilSelisih = detik + ' detik';
     }
 
     return hasilSelisih.trim();
 }
+
 
 // Fungsi untuk memperbarui kolom selisih waktu
 function updateSelisihWaktu() {
