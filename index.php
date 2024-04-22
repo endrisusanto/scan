@@ -20,7 +20,7 @@ if (isset($_SESSION['alert_message'])) {
         echo "<div class='alert alert-warning' role='alert'>DATA PEMINJAMAN BERHASIL DISIMPAN</div>";
         echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
     } elseif ($_SESSION['alert_message'] === "BERGANTI") {
-        echo "<div class='alert alert-info' role='alert'>PIC HANDLER SAMPLE BERGANTI</div>";
+        echo "<div class='alert alert-info' role='alert'>DATA PIC PEMINJAMAN BERHASIL DISIMPAN</div>";
         echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
     } elseif ($_SESSION['alert_message'] === "TIDAK_TERSEDIA") {
         echo "<div class='alert alert-danger' role='alert'>DATA TIDAK TERSEDIA</div>";
