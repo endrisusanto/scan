@@ -15,16 +15,16 @@ if (!isset($_SESSION['name'])) {
 if (isset($_SESSION['alert_message'])) {
     if ($_SESSION['alert_message'] === "KEMBALI") {
         echo "<div class='alert alert-success' role='alert'>SAMPLE SUDAH KEMBALI</div>";
-        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 6000);</script>";
     } elseif ($_SESSION['alert_message'] === "PINJAM") {
         echo "<div class='alert alert-warning' role='alert'>DATA PEMINJAMAN BERHASIL DISIMPAN</div>";
-        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 6000);</script>";
     } elseif ($_SESSION['alert_message'] === "BERGANTI") {
         echo "<div class='alert alert-info' role='alert'>DATA PIC PEMINJAMAN BERHASIL DISIMPAN</div>";
-        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 6000);</script>";
     } elseif ($_SESSION['alert_message'] === "TIDAK_TERSEDIA") {
         echo "<div class='alert alert-danger' role='alert'>DATA TIDAK TERSEDIA</div>";
-        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 3000);</script>";
+        echo "<script>setTimeout(function() {document.querySelector('.alert').style.display = 'none';}, 6000);</script>";
     }
     
     // Hapus pesan dari sesi setelah ditampilkan
@@ -60,17 +60,21 @@ if (isset($_SESSION['alert_message'])) {
     width:100%;
     text-align:center;
     border-radius: 5px;
-    animation: floatAlert 3s ease-out forwards;
+    animation: floatAlert 6s ease-out forwards;
     font-size: 64px;
 }
 
 @keyframes floatAlert {
     0% {
-        opacity: 1;
+        opacity: 0;
         transform: translate(-50%, -50%) translateY(-30px);
     }
+    25% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(-60px);
+    }
     100% {
-        opacity: 0;
+        opacity: 1;
         transform: translate(-50%, -50%) translateY(-60px);
     }
 }
