@@ -601,7 +601,7 @@ function convertToUppercase(input) {
 
 <script>
 // Waktu awal dalam detik
-let timeLeft = 300; // 1 menit
+let timeLeft = 180; // 1 menit
 
 // Mendapatkan elemen timer
 const timerElement = document.getElementById('timer');
